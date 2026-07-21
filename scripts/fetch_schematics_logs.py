@@ -181,6 +181,38 @@ def get_latest_action(workspace_id: str, token: str):
 
 
 # ---------------------------------------------------------------------------
+# Step 3b — Get full workspace details (catalog variation + version)
+# ---------------------------------------------------------------------------
+def get_workspace_details(workspace_id: str, token: str) -> dict:
+    """
+    Return the full workspace object, including `catalog_ref` when the
+    workspace was provisioned from a Catalog offering:
+      { "catalog_ref": { "item_name": "...", "offering_version": "...", ... } }
+    """
+    url = f"{SCHEMATICS_BASE_URL}/v1/workspaces/{workspace_id}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "X-Auth-Refresh-Token": token,
+    }
+    response = requests.get(url, headers=headers, timeout=30)
+    response.raise_for_status()
+    return response.json()
+
+
+def get_catalog_info(workspace_id: str, token: str) -> tuple[str, str]:
+    """
+    Return (catalog_variation, catalog_version) for a workspace, derived from
+    its catalog_ref. Falls back to ("Unknown", "Unknown") when the workspace
+    wasn't provisioned from a Catalog offering (no catalog_ref present).
+    """
+    details = get_workspace_details(workspace_id, token)
+    catalog_ref = details.get("catalog_ref") or {}
+    variation = catalog_ref.get("item_name", "Unknown")
+    version = catalog_ref.get("offering_version", "Unknown")
+    return variation, version
+
+
+# ---------------------------------------------------------------------------
 # Step 4 — Fetch log via log_url from the action response
 # ---------------------------------------------------------------------------
 def fetch_action_log(action: dict, token: str) -> str:
@@ -267,6 +299,8 @@ def fetch_all_workspace_logs(token: str) -> list:
             "action_status": str,  # COMPLETED / FAILED / etc.
             "performed_at": str,   # ISO-8601 timestamp
             "log_text":     str,   # raw Terraform log
+            "catalog_variation": str,  # catalog_ref.item_name, or "Unknown"
+            "catalog_version":   str,  # catalog_ref.offering_version, or "Unknown"
         }
 
     Workspaces with no actions or HTTP errors are silently skipped.
@@ -308,6 +342,9 @@ def fetch_all_workspace_logs(token: str) -> list:
             log_text = fetch_action_log(action, token)
             print(f"   ✓ {len(log_text):,} chars retrieved.\n")
 
+            catalog_variation, catalog_version = get_catalog_info(ws_id, token)
+            print(f"   Catalog: {catalog_variation} @ {catalog_version}\n")
+
             log_entries.append({
                 "ws_id":         ws_id,
                 "ws_name":       ws_name,
@@ -317,6 +354,8 @@ def fetch_all_workspace_logs(token: str) -> list:
                 "action_status": action_status,
                 "performed_at":  performed_at,
                 "log_text":      log_text,
+                "catalog_variation": catalog_variation,
+                "catalog_version":   catalog_version,
             })
 
         except requests.exceptions.HTTPError as e:

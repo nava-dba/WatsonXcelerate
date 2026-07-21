@@ -621,12 +621,19 @@
       </div>
 
       <table id="dataTableStatus" class="bx--data-table dc-table" style="width:100%;">
+        <colgroup>
+          <col class="col-date">
+          <col class="col-workspace">
+          <col class="col-variation">
+          <col class="col-version">
+          <col class="col-errors">
+        </colgroup>
         <thead>
           <tr>
             <th class="sortable" data-sort="date">Date</th>
-            <th class="sortable" data-sort="zone">Zone</th>
-            <th class="sortable" data-sort="os">PowerVS Image</th>
+            <th class="sortable" data-sort="workspace">Workspace</th>
             <th class="sortable" data-sort="repo">Variation</th>
+            <th class="sortable" data-sort="version">Version</th>
             <th>Errors</th>
           </tr>
         </thead>

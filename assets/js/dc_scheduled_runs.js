@@ -117,15 +117,15 @@ function sortRecords(records, column, direction) {
     if (column === 'date') {
       aVal = a.Date ? a.Date.replace(/<[^>]*>/g, '').toLowerCase() : '';
       bVal = b.Date ? b.Date.replace(/<[^>]*>/g, '').toLowerCase() : '';
-    } else if (column === 'zone') {
-      aVal = (a.DC || '').toLowerCase();
-      bVal = (b.DC || '').toLowerCase();
-    } else if (column === 'os') {
-      aVal = (a.OS || '').toLowerCase();
-      bVal = (b.OS || '').toLowerCase();
+    } else if (column === 'workspace') {
+      aVal = (a.workspacename || '').toLowerCase();
+      bVal = (b.workspacename || '').toLowerCase();
     } else if (column === 'repo') {
       aVal = (a.Repo || '').toLowerCase();
       bVal = (b.Repo || '').toLowerCase();
+    } else if (column === 'version') {
+      aVal = (a.Version || '').toLowerCase();
+      bVal = (b.Version || '').toLowerCase();
     } else {
       aVal = '';
       bVal = '';
@@ -137,6 +137,19 @@ function sortRecords(records, column, direction) {
       return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
     }
   });
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value);
 }
 
 function createTableRow(record) {
@@ -213,11 +226,15 @@ function createTableRow(record) {
     `;
   }
 
+  const workspaceVal = record.workspacename || "-";
+  const variationVal = record.Repo || "-";
+  const versionVal = record.Version || "-";
+
   row.innerHTML = `
     <td>${record.Date || "-"}</td>
-    <td>${record.DC || "-"}</td>
-    <td>${record.OS || "-"}</td>
-    <td>${record.Repo || "-"}</td>
+    <td class="cell-truncate" title="${escapeAttr(workspaceVal)}">${escapeHtml(workspaceVal)}</td>
+    <td class="cell-truncate" title="${escapeAttr(variationVal)}">${escapeHtml(variationVal)}</td>
+    <td class="cell-truncate" title="${escapeAttr(versionVal)}">${escapeHtml(versionVal)}</td>
     <td>${errorCellHTML}</td>
   `;
   return row;
@@ -305,9 +322,9 @@ function setupSearch() {
     const filtered = allRecords.filter(record => {
       let searchableText = [
         record.Date || '',
-        record.DC || '',
-        record.OS || '',
+        record.workspacename || '',
         record.Repo || '',
+        record.Version || '',
         record.Errors || '',
         record.ErrorsShort || ''
       ];

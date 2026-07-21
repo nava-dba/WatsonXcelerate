@@ -333,8 +333,8 @@ async function loadScheduledRunsData() {
 
 function populateFilters() {
   // Get unique values for each filter
-  const zones = [...new Set(allRecords.map(r => r.DC).filter(Boolean))].sort();
-  const images = [...new Set(allRecords.map(r => r.OS).filter(Boolean))].sort();
+  const zones = [...new Set(allRecords.map(r => r.workspacename).filter(Boolean))].sort();
+  const images = [...new Set(allRecords.map(r => r.Version).filter(Boolean))].sort();
   const variations = [...new Set(allRecords.map(r => r.Repo).filter(Boolean))].sort();
 
   // Populate zone filter
@@ -421,11 +421,11 @@ function applyFilters() {
       if (dateTo && recordDate > dateTo) return false;
     }
 
-    // Zone filter
-    if (zone && record.DC !== zone) return false;
+    // Workspace filter
+    if (zone && record.workspacename !== zone) return false;
 
-    // Image filter
-    if (image && record.OS !== image) return false;
+    // Version filter
+    if (image && record.Version !== image) return false;
 
     // Variation filter
     if (variation && record.Repo !== variation) return false;
@@ -684,20 +684,20 @@ function showErrorDetails(category) {
     return categories.includes(category);
   });
 
-  // Count occurrences by zone
+  // Count occurrences by workspace
   const zoneCounts = {};
   categoryRecords.forEach(record => {
-    const zone = record.DC || 'N/A';
+    const zone = record.workspacename || 'N/A';
     zoneCounts[zone] = (zoneCounts[zone] || 0) + 1;
   });
 
-  // Sort zones by count (descending)
+  // Sort workspaces by count (descending)
   const sortedZones = Object.entries(zoneCounts).sort((a, b) => b[1] - a[1]);
 
-  // Build zone counter section
+  // Build workspace counter section
   let zoneCounterHTML = `
     <div class="ea-zone-panel">
-      <h3 class="ea-zone-title">Zone Distribution</h3>
+      <h3 class="ea-zone-title">Workspace Distribution</h3>
       <div class="ea-zone-list">
   `;
 
@@ -721,9 +721,9 @@ function showErrorDetails(category) {
       <thead>
         <tr>
           <th>Date</th>
-          <th>Zone</th>
-          <th>Image</th>
+          <th>Workspace</th>
           <th>Variation</th>
+          <th>Version</th>
           <th>Description</th>
         </tr>
       </thead>
@@ -733,9 +733,9 @@ function showErrorDetails(category) {
   categoryRecords.forEach(record => {
     const jobUrl = extractUrl(record.Date);
     const date = extractDate(record.Date) || 'N/A';
-    const zone = record.DC || 'N/A';
-    const image = record.OS || 'N/A';
+    const zone = record.workspacename || 'N/A';
     const variation = record.Repo || 'N/A';
+    const version = record.Version || 'N/A';
 
     // Extract error details for this category
     let description = 'N/A';
@@ -756,8 +756,8 @@ function showErrorDetails(category) {
       <tr class="error-row" data-zone="${escapeAttr(zone)}">
         <td>${jobCell}</td>
         <td>${escapeHtml(zone)}</td>
-        <td>${escapeHtml(image)}</td>
         <td>${escapeHtml(variation)}</td>
+        <td>${escapeHtml(version)}</td>
         <td>${escapeHtml(description)}</td>
       </tr>
     `;

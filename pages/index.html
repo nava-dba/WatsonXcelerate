@@ -25,147 +25,111 @@
             font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
         }
 
-        /* Welcome Section */
-        .welcome-section {
-            background: linear-gradient(135deg, #0f62fe 0%, #0043ce 100%);
-            color: white;
-            padding: 3rem 2rem;
-            border-radius: 0;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        /* ── Page wrapper ── */
+        .page-inner {
+            padding: 0 2rem 2rem;
+            max-width: 1200px;
         }
 
-        .welcome-section h1 {
-            font-size: 2.5rem;
+        /* ── Page header ── */
+        .dash-header {
+            padding: 2rem 0 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 2rem;
+        }
+
+        .dash-header h1 {
+            font-size: 1.75rem;
             font-weight: 600;
-            margin: 0 0 1rem 0;
-            line-height: 1.2;
+            margin: 0 0 0.35rem;
+            color: #161616;
+            line-height: 1.25;
         }
 
-        .welcome-section p {
-            font-size: 1.125rem;
+        .dash-header p {
+            font-size: 0.875rem;
+            color: #525252;
             margin: 0;
-            opacity: 0.95;
-            max-width: 800px;
         }
 
-        /* Cards Grid */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        /* ── Section label ── */
+        .section-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #525252;
+            margin: 0 0 0.75rem;
         }
 
-        .bx--tile {
-            padding: 1.5rem;
-            border-radius: 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.11s;
+        /* ── Feature tile (Stability) ── */
+        .feature-tile-link {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            padding: 1.25rem 1.5rem;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #da1e28;
             text-decoration: none;
             color: inherit;
-            display: block;
-            border-left: 4px solid transparent;
+            margin-bottom: 2rem;
+            transition: box-shadow 0.11s, border-color 0.11s;
         }
 
-        .bx--tile:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        .feature-tile-link:hover {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+            border-left-color: #a2191f;
         }
 
-        .bx--tile.capabilities {
-            border-left-color: #0f62fe;
-        }
-
-        .bx--tile.grs {
-            border-left-color: #24a148;
-        }
-
-        .bx--tile.images {
-            border-left-color: #8a3ffc;
-        }
-
-        .bx--tile.latency {
-            border-left-color: #ff832b;
-        }
-
-        .bx--tile.hana-backint {
-            border-left-color: #00aaff;
-        }
-
-        .bx--tile.stability {
-            border-left-color: #da1e28;
-        }
-
-        .tile-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            opacity: 0.8;
-        }
-
-        .tile-icon.capabilities {
-            color: #0f62fe;
-        }
-
-        .tile-icon.grs {
-            color: #24a148;
-        }
-
-        .tile-icon.images {
-            color: #8a3ffc;
-        }
-
-        .tile-icon.latency {
-            color: #ff832b;
-        }
-
-        .tile-icon.hana-backint {
-            color: #00aaff;
-        }
-
-        .tile-icon.stability {
+        .feature-tile-icon {
+            flex-shrink: 0;
             color: #da1e28;
+            display: flex;
+            align-items: center;
         }
 
-        .bx--tile h3 {
-            font-size: 1.25rem;
+        .feature-tile-body h3 {
+            font-size: 1rem;
             font-weight: 600;
-            margin: 0 0 0.5rem 0;
+            margin: 0 0 0.25rem;
             color: #161616;
         }
 
-        .bx--tile p {
-            font-size: 0.875rem;
+        .feature-tile-body p {
+            font-size: 0.8125rem;
             color: #525252;
             margin: 0;
             line-height: 1.5;
         }
 
-        /* Dashboard Tiles Container */
+        /* ── Dashboard tiles grid ── */
         .dashboard-tiles {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
         }
 
-        /* Error Analysis Tile */
-        .error-analysis-tile {
+        /* ── Shared tile base ── */
+        .dash-tile {
             background-color: #ffffff;
-            padding: 1rem;
-            border-radius: 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #da1e28;
+            border: 1px solid #e0e0e0;
+            border-top: 3px solid #da1e28;
+            padding: 1.25rem;
         }
 
-        .error-header {
+        /* ── Tile header row ── */
+        .tile-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e0e0e0;
         }
 
-        .error-header h2 {
-            font-size: 1.125rem;
+        .tile-header h2 {
+            font-size: 0.9375rem;
             font-weight: 600;
             margin: 0;
             color: #161616;
@@ -176,32 +140,34 @@
             color: #0f62fe;
             text-decoration: none;
             font-weight: 400;
+            white-space: nowrap;
         }
 
         .view-all-link:hover {
             text-decoration: underline;
         }
 
-        .error-total {
+        /* ── Stat summary row ── */
+        .tile-stat {
             display: flex;
             align-items: baseline;
             gap: 0.5rem;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 1rem;
         }
 
-        .error-total-label {
+        .tile-stat-label {
             font-size: 0.8125rem;
             color: #525252;
         }
 
-        .error-total-count {
-            font-size: 1.5rem;
+        .tile-stat-value {
+            font-size: 1.75rem;
             font-weight: 600;
             color: #da1e28;
+            line-height: 1;
         }
 
+        /* ── Error chart area ── */
         .error-content {
             display: grid;
             grid-template-columns: 140px 1fr;
@@ -256,35 +222,7 @@
             text-align: right;
         }
 
-        /* Recent Runs Tile */
-        .recent-runs-tile {
-            background-color: #ffffff;
-            padding: 1rem;
-            border-radius: 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #da1e28;
-        }
-
-        .runs-total {
-            display: flex;
-            align-items: baseline;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .runs-total-label {
-            font-size: 0.8125rem;
-            color: #525252;
-        }
-
-        .runs-total-count {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #da1e28;
-        }
-
+        /* ── Recent runs list ── */
         .recent-errors-list {
             display: flex;
             flex-direction: column;
@@ -292,9 +230,8 @@
         }
 
         .recent-error-item {
-            padding: 0.5rem;
+            padding: 0.625rem 0.75rem;
             background-color: #f4f4f4;
-            border-radius: 4px;
             border-left: 3px solid #da1e28;
         }
 
@@ -321,141 +258,80 @@
             color: #525252;
         }
 
-        /* HANA Backint Tile */
-        .hana-backint-tile {
-            background-color: #ffffff;
-            padding: 1rem;
-            border-radius: 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #00aaff;
-            ;
-        }
-
-        .hana-runs-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .hana-run-item {
-            padding: 0.5rem;
-            background-color: #f4f4f4;
-            border-radius: 4px;
-            border-left: 3px solid #00aaff;
-            ;
-        }
-
-        .hana-run-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.25rem;
-        }
-
-        .hana-run-date {
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: #161616;
-        }
-
-        .hana-run-status {
-            font-size: 0.6875rem;
-            padding: 0.125rem 0.375rem;
-            border-radius: 2px;
-            font-weight: 600;
-        }
-
-        .status-success {
-            background-color: #24a148;
-            color: #ffffff;
-        }
-
-        .status-failed {
-            background-color: #da1e28;
-            color: #ffffff;
-        }
-
-        .hana-run-tests {
-            font-size: 0.75rem;
-            color: #161616;
-            margin-bottom: 0.25rem;
-        }
-
-        .hana-run-metrics {
-            font-size: 0.6875rem;
-            color: #525252;
-            display: flex;
-            flex-direction: column;
-            gap: 0.125rem;
-        }
-
-        /* Dark Mode Overrides */
+        /* ── Dark mode ── */
         @media (prefers-color-scheme: dark) {
-            body {
-                background-color: rgb(22, 22, 22) !important;
-                color: #ffffff !important;
+            .dash-header {
+                border-bottom-color: #393939;
             }
 
-            .bx--content {
-                background-color: rgb(22, 22, 22) !important;
+            .dash-header h1 {
+                color: #f4f4f4;
             }
 
-            .bx--tile {
-                background-color: #333333 !important;
+            .dash-header p,
+            .section-label {
+                color: #a8a8a8;
             }
 
-            .bx--tile h3 {
-                color: #ffffff !important;
+            .feature-tile-link {
+                background-color: #262626;
+                border-color: #393939;
             }
 
-            .bx--tile p {
-                color: #c6c6c6 !important;
+            .feature-tile-body h3 {
+                color: #f4f4f4;
             }
 
-            .error-analysis-tile,
-            .recent-runs-tile,
-            .hana-backint-tile {
-                background-color: #333333 !important;
+            .feature-tile-body p {
+                color: #a8a8a8;
             }
 
-            .error-header h2 {
-                color: #ffffff !important;
+            .dash-tile {
+                background-color: #262626;
+                border-color: #393939;
             }
 
-            .error-total-label,
-            .runs-total-label {
-                color: #c6c6c6 !important;
+            .tile-header {
+                border-bottom-color: #393939;
+            }
+
+            .tile-header h2 {
+                color: #f4f4f4;
+            }
+
+            .tile-stat-label {
+                color: #a8a8a8;
             }
 
             .legend-category,
             .legend-count {
-                color: #ffffff !important;
+                color: #f4f4f4;
             }
 
-            .recent-error-item,
-            .hana-run-item {
-                background-color: #262626 !important;
+            .recent-error-item {
+                background-color: #333333;
             }
 
-            .error-item-dc,
-            .hana-run-date,
-            .hana-run-tests {
-                color: #ffffff !important;
+            .error-item-dc {
+                color: #f4f4f4;
             }
 
             .error-item-date,
-            .error-item-category,
-            .hana-run-metrics {
-                color: #c6c6c6 !important;
+            .error-item-category {
+                color: #a8a8a8;
             }
 
             .view-all-link {
-                color: #78a9ff !important;
+                color: #78a9ff;
             }
         }
 
-        /* Responsive Design */
+        /* ── Responsive ── */
         @media (max-width: 768px) {
+            .page-inner {
+                padding: 0 1rem 2rem;
+            }
+
             .error-content {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
@@ -525,17 +401,18 @@
 
     <!-- Main Content -->
     <div class="bx--content">
-        <div style="padding: 0 2rem;">
-            <!-- Welcome Section -->
-            <div class="welcome-section">
-                <h1>Log analysis dashboard</h1>
-                <p>.</p>
+        <div class="page-inner">
+
+            <!-- Page Header -->
+            <div class="dash-header">
+                <h1>Log Analysis Dashboard</h1>
+                <p>Scheduled architecture run results, error trends, and stability metrics for IBM Cloud PowerVS.</p>
             </div>
 
-            <!-- Navigation Cards -->
-
-            <a href="dc_scheduled_runs.html" class="bx--tile stability">
-                <div class="tile-icon stability">
+            <!-- Feature: Stability -->
+            <p class="section-label">Overview</p>
+            <a href="dc_scheduled_runs.html" class="feature-tile-link">
+                <div class="feature-tile-icon">
                     <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
                         <path
@@ -543,48 +420,51 @@
                         </path>
                     </svg>
                 </div>
-                <h3>Scheduled Runs Stability</h3>
-                <p>Track end-to-end scheduled architecture runs, failures, and error trends across PowerVS
-                    datacenters.</p>
+                <div class="feature-tile-body">
+                    <h3>Scheduled Runs Stability</h3>
+                    <p>Track end-to-end scheduled architecture runs, failures, and error trends across PowerVS datacenters.</p>
+                </div>
             </a>
-            </div>
 
-            <!-- Dashboard Tiles -->
+            <!-- Analytics Tiles -->
+            <p class="section-label">Analytics</p>
             <div class="dashboard-tiles">
+
                 <!-- Error Analysis Tile -->
-                <div class="error-analysis-tile">
-                    <div class="error-header">
-                        <h2>Error analysis</h2>
-                        <a href="dc_scheduled_runs_analytics.html" class="view-all-link">View all →</a>
+                <div class="dash-tile">
+                    <div class="tile-header">
+                        <h2>Error Analysis</h2>
+                        <a href="dc_scheduled_runs_analytics.html" class="view-all-link">View details →</a>
                     </div>
-                    <div class="error-total">
-                        <span class="error-total-label">Total errors (<span id="error-month">-</span>):</span>
-                        <span class="error-total-count" id="total-errors">-</span>
+                    <div class="tile-stat">
+                        <span class="tile-stat-label">Total errors (last 30 days)</span>
+                        <span class="tile-stat-value" id="total-errors">–</span>
                     </div>
                     <div class="error-content">
                         <div class="error-chart-container">
                             <canvas id="error-chart" width="140" height="140"></canvas>
                         </div>
                         <div class="error-legend" id="error-legend">
-                            <!-- Legend will be populated by JavaScript -->
+                            <!-- populated by dashboard_tiles.js -->
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Runs Tile -->
-                <div class="recent-runs-tile">
-                    <div class="error-header">
+                <!-- Latest DA Runs Tile -->
+                <div class="dash-tile">
+                    <div class="tile-header">
                         <h2>Latest DA Runs</h2>
                         <a href="dc_scheduled_runs.html" class="view-all-link">View all →</a>
                     </div>
-                    <div class="runs-total">
-                        <span class="runs-total-label">Total runs:</span>
-                        <span class="runs-total-count" id="total-runs">-</span>
+                    <div class="tile-stat">
+                        <span class="tile-stat-label">Total runs</span>
+                        <span class="tile-stat-value" id="total-runs">–</span>
                     </div>
                     <div class="recent-errors-list" id="recent-errors-list">
-                        <!-- Recent errors will be populated by JavaScript -->
+                        <!-- populated by dashboard_tiles.js -->
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -596,11 +476,9 @@
     <script src="../assets/js/dashboard_tiles.js"></script>
 
     <script>
-        // Initialize Carbon components
         var sideNavElement = document.querySelector('[data-side-nav]');
         var sideNav = CarbonComponents.SideNav.create(sideNavElement);
 
-        // Handle toggle button - properly toggle the rail state
         var toggleButton = document.querySelector('.bx--side-nav__toggle');
         if (toggleButton && sideNav) {
             toggleButton.addEventListener('click', function () {
