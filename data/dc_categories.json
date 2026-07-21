@@ -1,0 +1,437 @@
+{
+    "categories": [
+        {
+            "name": "VPN",
+            "color": "#0f62fe",
+            "patterns": [
+                "vpn server",
+                "vpn gateway",
+                "vpn connection",
+                "module contains: vpn",
+                "ibm_is_vpn",
+                "vpn_gateway",
+                "vpn_server"
+            ],
+            "examples": [
+                "VPN gateway creation failed",
+                "VPN connection timeout",
+                "Module: module.ibm_is_vpn_gateway.vpn"
+            ]
+        },
+        {
+            "name": "Load Balancer",
+            "color": "#4589ff",
+            "patterns": [
+                "load balancer",
+                "lb listener",
+                "lb pool",
+                "subnet issues",
+                "module contains: lb",
+                "ibm_is_lb",
+                "load_balancer"
+            ],
+            "examples": [
+                "Load balancer pool creation failed",
+                "Load balancer subnet issue",
+                "Module: module.vpc.ibm_is_lb.lb"
+            ]
+        },
+        {
+            "name": "SSH Connectivity",
+            "color": "#08bdba",
+            "patterns": [
+                "timeout",
+                "refused",
+                "unreachable",
+                "connection refused",
+                "ssh:",
+                "timed out",
+                "dial tcp",
+                "no route to host"
+            ],
+            "examples": [
+                "Failed to connect to the host via SSH",
+                "Connection timed out",
+                "SSH connection refused"
+            ]
+        },
+        {
+            "name": "DNS",
+            "color": "#1192e8",
+            "patterns": [
+                "resolution failure",
+                "dns resolution",
+                "name resolution",
+                "could not resolve"
+            ],
+            "examples": [
+                "DNS resolution failed",
+                "Could not resolve hostname"
+            ]
+        },
+        {
+            "name": "SSH Key",
+            "color": "#33b1ff",
+            "patterns": [
+                "duplicate key",
+                "fingerprint issue",
+                "ssh key",
+                "key fingerprint",
+                "public key"
+            ],
+            "examples": [
+                "SSH key already exists",
+                "Duplicate key fingerprint"
+            ]
+        },
+        {
+            "name": "Remote Exec",
+            "color": "#f1c21b",
+            "patterns": [
+                "terraform remote-exec",
+                "remote-exec",
+                "remote exec",
+                "provisioner \"remote-exec\"",
+                "terraform_data.execute_playbooks",
+                "execute_playbooks",
+                "error executing",
+                "process exited with status",
+                "/tmp/terraform_"
+            ],
+            "examples": [
+                "Remote-exec provisioner failed",
+                "Error executing remote command",
+                "terraform_data.execute_playbooks error",
+                "Process exited with status 1",
+                "error executing /tmp/terraform_*.sh"
+            ]
+        },
+        {
+            "name": "Ansible",
+            "color": "#fddc69",
+            "patterns": [
+                "ansible errors",
+                "ansible",
+                "playbook",
+                "ansible-playbook",
+                "fatal: [",
+                "unreachable=",
+                "failed=",
+                "play recap",
+                "module contains: ansible",
+                "ansible_sap_instance"
+            ],
+            "examples": [
+                "Ansible playbook execution failed",
+                "Ansible task error",
+                "fatal: [10.51.0.186]: UNREACHABLE!",
+                "PLAY RECAP with failures",
+                "Module: module.ansible_sap_instance_init[0]"
+            ]
+        },
+        {
+            "name": "Package Install",
+            "color": "#ff832b",
+            "patterns": [
+                "yum failures",
+                "dnf failures",
+                "apt failures",
+                "yum install",
+                "dnf install",
+                "apt install",
+                "package install"
+            ],
+            "examples": [
+                "Package installation failed",
+                "yum install error"
+            ]
+        },
+        {
+            "name": "PowerVS Instance",
+            "color": "#da1e28",
+            "patterns": [
+                "lpar",
+                "vm",
+                "capacity",
+                "no valid host",
+                "failed to schedule",
+                "allocation candidates",
+                "pi_instance",
+                "exceeded maximum scheduling",
+                "module contains: pi_instance",
+                "ibm_pi_instance"
+            ],
+            "examples": [
+                "Exceeded maximum scheduling attempts",
+                "No valid host found for instance",
+                "PowerVS instance creation failed",
+                "Module: module.pi_instance.ibm_pi_instance.instance"
+            ]
+        },
+        {
+            "name": "PowerVS Workspace",
+            "color": "#fa4d56",
+            "patterns": [
+                "workspace creation",
+                "pi_workspace",
+                "powervs workspace"
+            ],
+            "examples": [
+                "PowerVS workspace creation failed",
+                "Workspace initialization error"
+            ]
+        },
+        {
+            "name": "PowerVS Volume",
+            "color": "#ff8389",
+            "patterns": [
+                "storage attach",
+                "volume",
+                "pi_volume",
+                "volume attach",
+                "storage volume",
+                "module contains: pi_volume",
+                "ibm_pi_volume"
+            ],
+            "examples": [
+                "Volume attachment failed",
+                "PowerVS volume creation error",
+                "Module: module.pi_volume.ibm_pi_volume.volume"
+            ]
+        },
+        {
+            "name": "PowerVS Network",
+            "color": "#ffb3b8",
+            "patterns": [
+                "subnet",
+                "network",
+                "per",
+                "pi_network",
+                "network creation",
+                "module contains: pi_network",
+                "ibm_pi_network"
+            ],
+            "examples": [
+                "PowerVS network creation failed",
+                "Subnet configuration error",
+                "Module: module.pi_network.ibm_pi_network.network"
+            ]
+        },
+        {
+            "name": "Image Import",
+            "color": "#ee5396",
+            "patterns": [
+                "missing image",
+                "duplicate image",
+                "image import",
+                "image not found",
+                "pi_image"
+            ],
+            "examples": [
+                "Image import failed",
+                "Image not found",
+                "Duplicate image name"
+            ]
+        },
+        {
+            "name": "Schematics Apply",
+            "color": "#24a148",
+            "patterns": [
+                "terraform apply error",
+                "apply failed",
+                "schematics apply",
+                "schematics deployment failed",
+                "deploy_status=",
+                "deployment script execution completed"
+            ],
+            "examples": [
+                "Terraform apply error (wrapper only, no specific root cause)",
+                "Schematics apply failed (when no other error is visible)",
+                "SCHEMATICS DEPLOYMENT FAILED with no actual error",
+                "DEPLOY_STATUS=FAILED with only wrapper messages"
+            ]
+        },
+        {
+            "name": "Schematics Job",
+            "color": "#42be65",
+            "patterns": [
+                "could not execute job",
+                "job execution failed",
+                "schematics job"
+            ],
+            "examples": [
+                "Could not execute job (when no other error is visible)",
+                "Schematics job failed (wrapper only)"
+            ]
+        },
+        {
+            "name": "Schematics Workspace",
+            "color": "#6fdc8c",
+            "patterns": [
+                "workspace status: failed",
+                "workspace status: inprogress",
+                "workspace apply",
+                "activity failed",
+                "schematics workspace",
+                "installation failed",
+                "schematics workspace id:",
+                "new workspace action",
+                "related workspace:",
+                "terraform init",
+                "terraform commands"
+            ],
+            "examples": [
+                "Workspace apply failed (when no other error is visible)",
+                "Schematics activity error (wrapper only)",
+                "Workspace status: FAILED (no specific root cause)",
+                "SCHEMATICS WORKSPACE ID with only init/status messages",
+                "Installation failed with no technical error details"
+            ]
+        },
+        {
+            "name": "IBM Cloud API",
+            "color": "#8a3ffc",
+            "patterns": [
+                "api errors",
+                "http 4xx",
+                "http 5xx",
+                "api error",
+                "http 4",
+                "http 5",
+                "status code 4",
+                "status code 5"
+            ],
+            "examples": [
+                "IBM Cloud API error: 404",
+                "API request failed with status 500"
+            ]
+        },
+        {
+            "name": "Service Connectivity",
+            "color": "#a56eff",
+            "patterns": [
+                "nfs",
+                "service timeout",
+                "service connection",
+                "connectivity error"
+            ],
+            "examples": [
+                "Service connection timeout",
+                "NFS mount failed"
+            ]
+        },
+        {
+            "name": "IAM / Trusted Profile",
+            "color": "#be95ff",
+            "patterns": [
+                "auth",
+                "authz",
+                "iam",
+                "trusted profile",
+                "authorization",
+                "authentication",
+                "access denied",
+                "unauthorized"
+            ],
+            "examples": [
+                "IAM authorization failed",
+                "Trusted profile error",
+                "Access denied"
+            ]
+        },
+        {
+            "name": "Terraform Apply",
+            "color": "#4c6ef5",
+            "patterns": [
+                "config errors",
+                "plan errors",
+                "apply errors",
+                "terraform plan",
+                "terraform config",
+                "invalid configuration"
+            ],
+            "examples": [
+                "Terraform configuration error",
+                "Invalid Terraform plan"
+            ]
+        },
+        {
+            "name": "Provider Inconsistency",
+            "color": "#5b7ff5",
+            "patterns": [
+                "provider mismatch",
+                "provider version",
+                "inconsistent provider",
+                "provider error"
+            ],
+            "examples": [
+                "Provider version mismatch",
+                "Inconsistent provider state"
+            ]
+        },
+        {
+            "name": "Deprecated Action / Dependency",
+            "color": "#748ffc",
+            "patterns": [
+                "deprecated usage",
+                "deprecated",
+                "deprecation warning",
+                "legacy action"
+            ],
+            "examples": [
+                "Deprecated action used",
+                "Legacy dependency warning"
+            ]
+        },
+        {
+            "name": "Subscription / Licensing",
+            "color": "#8d6e63",
+            "patterns": [
+                "entitlement",
+                "license",
+                "subscription",
+                "quota exceeded",
+                "rhsm",
+                "subscription-manager",
+                "unable to reach the server at",
+                "updates.au-syd.iaas.service.networklayer.com",
+                "updates.*.iaas.service.networklayer.com",
+                "rhha01.updates",
+                "registration failed",
+                "subscription registration",
+                "rpm: no packages given for erase"
+            ],
+            "examples": [
+                "Entitlement check failed",
+                "License validation error",
+                "Quota exceeded",
+                "Unable to reach the server at rhha01.updates.au-syd.iaas.service.networklayer.com:8443/rhsm",
+                "RHSM registration failed",
+                "subscription-manager register error",
+                "rpm: no packages given for erase"
+            ]
+        },
+        {
+            "name": "Conflict / Already Exists",
+            "color": "#a1887f",
+            "patterns": [
+                "duplicate resource",
+                "already exists",
+                "duplicate",
+                "conflict",
+                "resource exists"
+            ],
+            "examples": [
+                "Resource already exists",
+                "Duplicate resource name",
+                "Conflict detected"
+            ]
+        },
+        {
+            "name": "Unknown",
+            "color": "#6c757d",
+            "patterns": [],
+            "examples": []
+        }
+    ]
+}

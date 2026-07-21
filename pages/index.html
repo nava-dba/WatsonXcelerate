@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="IBM Cloud PowerVS Dashboard" />
+    <meta name="author" content="" />
+    <title>IBM Cloud PowerVS Dashboard</title>
+
+    <!-- IBM Carbon Design System CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/carbon-components@10.58.0/css/carbon-components.min.css">
+
+    <!-- IBM Plex Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap">
+
+    <!-- Navigation Styles -->
+    <link rel="stylesheet" href="../assets/css/navigation.css?v=3.4.0">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: linear-gradient(135deg, #0f62fe 0%, #0043ce 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            line-height: 1.2;
+        }
+
+        .welcome-section p {
+            font-size: 1.125rem;
+            margin: 0;
+            opacity: 0.95;
+            max-width: 800px;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .bx--tile {
+            padding: 1.5rem;
+            border-radius: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.11s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border-left: 4px solid transparent;
+        }
+
+        .bx--tile:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .bx--tile.capabilities {
+            border-left-color: #0f62fe;
+        }
+
+        .bx--tile.grs {
+            border-left-color: #24a148;
+        }
+
+        .bx--tile.images {
+            border-left-color: #8a3ffc;
+        }
+
+        .bx--tile.latency {
+            border-left-color: #ff832b;
+        }
+
+        .bx--tile.hana-backint {
+            border-left-color: #00aaff;
+        }
+
+        .bx--tile.stability {
+            border-left-color: #da1e28;
+        }
+
+        .tile-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .tile-icon.capabilities {
+            color: #0f62fe;
+        }
+
+        .tile-icon.grs {
+            color: #24a148;
+        }
+
+        .tile-icon.images {
+            color: #8a3ffc;
+        }
+
+        .tile-icon.latency {
+            color: #ff832b;
+        }
+
+        .tile-icon.hana-backint {
+            color: #00aaff;
+        }
+
+        .tile-icon.stability {
+            color: #da1e28;
+        }
+
+        .bx--tile h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            color: #161616;
+        }
+
+        .bx--tile p {
+            font-size: 0.875rem;
+            color: #525252;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Dashboard Tiles Container */
+        .dashboard-tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Error Analysis Tile */
+        .error-analysis-tile {
+            background-color: #ffffff;
+            padding: 1rem;
+            border-radius: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #da1e28;
+        }
+
+        .error-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-header h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0;
+            color: #161616;
+        }
+
+        .view-all-link {
+            font-size: 0.8125rem;
+            color: #0f62fe;
+            text-decoration: none;
+            font-weight: 400;
+        }
+
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+
+        .error-total {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .error-total-label {
+            font-size: 0.8125rem;
+            color: #525252;
+        }
+
+        .error-total-count {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #da1e28;
+        }
+
+        .error-content {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .error-chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .error-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .legend-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: 1;
+            gap: 0.5rem;
+        }
+
+        .legend-category {
+            font-size: 0.75rem;
+            color: #161616;
+            flex: 1;
+        }
+
+        .legend-count {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #161616;
+            min-width: 1.5rem;
+            text-align: right;
+        }
+
+        /* Recent Runs Tile */
+        .recent-runs-tile {
+            background-color: #ffffff;
+            padding: 1rem;
+            border-radius: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #da1e28;
+        }
+
+        .runs-total {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .runs-total-label {
+            font-size: 0.8125rem;
+            color: #525252;
+        }
+
+        .runs-total-count {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #da1e28;
+        }
+
+        .recent-errors-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .recent-error-item {
+            padding: 0.5rem;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+            border-left: 3px solid #da1e28;
+        }
+
+        .error-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.15rem;
+        }
+
+        .error-item-dc {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #161616;
+        }
+
+        .error-item-date {
+            font-size: 0.6875rem;
+            color: #525252;
+        }
+
+        .error-item-category {
+            font-size: 0.75rem;
+            color: #525252;
+        }
+
+        /* HANA Backint Tile */
+        .hana-backint-tile {
+            background-color: #ffffff;
+            padding: 1rem;
+            border-radius: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #00aaff;
+            ;
+        }
+
+        .hana-runs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .hana-run-item {
+            padding: 0.5rem;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+            border-left: 3px solid #00aaff;
+            ;
+        }
+
+        .hana-run-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .hana-run-date {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #161616;
+        }
+
+        .hana-run-status {
+            font-size: 0.6875rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 2px;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background-color: #24a148;
+            color: #ffffff;
+        }
+
+        .status-failed {
+            background-color: #da1e28;
+            color: #ffffff;
+        }
+
+        .hana-run-tests {
+            font-size: 0.75rem;
+            color: #161616;
+            margin-bottom: 0.25rem;
+        }
+
+        .hana-run-metrics {
+            font-size: 0.6875rem;
+            color: #525252;
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
+        }
+
+        /* Dark Mode Overrides */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: rgb(22, 22, 22) !important;
+                color: #ffffff !important;
+            }
+
+            .bx--content {
+                background-color: rgb(22, 22, 22) !important;
+            }
+
+            .bx--tile {
+                background-color: #333333 !important;
+            }
+
+            .bx--tile h3 {
+                color: #ffffff !important;
+            }
+
+            .bx--tile p {
+                color: #c6c6c6 !important;
+            }
+
+            .error-analysis-tile,
+            .recent-runs-tile,
+            .hana-backint-tile {
+                background-color: #333333 !important;
+            }
+
+            .error-header h2 {
+                color: #ffffff !important;
+            }
+
+            .error-total-label,
+            .runs-total-label {
+                color: #c6c6c6 !important;
+            }
+
+            .legend-category,
+            .legend-count {
+                color: #ffffff !important;
+            }
+
+            .recent-error-item,
+            .hana-run-item {
+                background-color: #262626 !important;
+            }
+
+            .error-item-dc,
+            .hana-run-date,
+            .hana-run-tests {
+                color: #ffffff !important;
+            }
+
+            .error-item-date,
+            .error-item-category,
+            .hana-run-metrics {
+                color: #c6c6c6 !important;
+            }
+
+            .view-all-link {
+                color: #78a9ff !important;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .error-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .error-chart-container {
+                justify-content: center;
+            }
+
+            .dashboard-tiles {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Carbon UI Shell Header -->
+    <header class="bx--header" role="banner" aria-label="IBM Cloud PowerVS Dashboard">
+        <button class="bx--header__action bx--header__menu-trigger bx--header__menu-toggle bx--side-nav__toggle"
+            aria-label="Open menu" title="Open menu" type="button">
+            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" aria-label="Open menu" width="20" height="20" viewBox="0 0 20 20" role="img">
+                <path d="M2 14.8H18V16H2zM2 11.2H18V12.399999999999999H2zM2 7.6H18V8.799999999999999H2zM2 4H18V5.2H2z">
+                </path>
+            </svg>
+        </button>
+        <span class="bx--header__name">IBM Cloud</span>
+        <span class="bx--header__name" style="margin-left: 0.5rem; font-weight: 400;">Power Virtual Server</span>
+    </header>
+
+    <!-- Carbon Side Navigation -->
+    <nav data-side-nav class="bx--side-nav bx--side-nav--ux bx--side-nav--expanded" aria-label="Side navigation">
+        <nav class="bx--side-nav__navigation">
+            <ul class="bx--side-nav__items">
+                <li class="bx--side-nav__item">
+                    <a class="bx--side-nav__link bx--side-nav__link--current" href="index.html">
+                        <div class="bx--side-nav__icon">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+                                viewBox="0 0 32 32" aria-hidden="true">
+                                <path
+                                    d="M16.6123,2.2138a1.01,1.01,0,0,0-1.2427,0L1,13.4194l1.2427,1.5717L4,13.6209V26a2.0041,2.0041,0,0,0,2,2H26a2.0037,2.0037,0,0,0,2-2V13.63L29.7573,15,31,13.4282ZM18,26H14V18h4Zm2,0V18a2.0023,2.0023,0,0,0-2-2H14a2.002,2.002,0,0,0-2,2v8H6V12.0615l10-7.79,10,7.8005V26Z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span class="bx--side-nav__link-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="bx--side-nav__item">
+                    <a class="bx--side-nav__link" href="dc_scheduled_runs.html">
+                        <div class="bx--side-nav__icon">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+                                viewBox="0 0 32 32" aria-hidden="true">
+                                <path
+                                    d="M28.7071,19.293,26,16.5859V13a2.0023,2.0023,0,0,0-2-2H22V9a2.0023,2.0023,0,0,0-2-2H18V4h2V2H12V4h2V7H12a2.0023,2.0023,0,0,0-2,2v2H8a2.0023,2.0023,0,0,0-2,2v9H4v2H6v4H8V24h2v4h2V24h2v4h2V24h2v4h2V24h2v4h2V24h2V22H24V13h2v3a.9991.9991,0,0,0,.293.707l3,3,1.414-1.414ZM12,9h8v2H12Zm0,4h8v9H12Z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span class="bx--side-nav__link-text">Stability</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="bx--content">
+        <div style="padding: 0 2rem;">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1>Log analysis dashboard</h1>
+                <p>.</p>
+            </div>
+
+            <!-- Navigation Cards -->
+
+            <a href="dc_scheduled_runs.html" class="bx--tile stability">
+                <div class="tile-icon stability">
+                    <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                        <path
+                            d="M28.7071,19.293,26,16.5859V13a2.0023,2.0023,0,0,0-2-2H22V9a2.0023,2.0023,0,0,0-2-2H18V4h2V2H12V4h2V7H12a2.0023,2.0023,0,0,0-2,2v2H8a2.0023,2.0023,0,0,0-2,2v9H4v2H6v4H8V24h2v4h2V24h2v4h2V24h2v4h2V24h2v4h2V24h2V22H24V13h2v3a.9991.9991,0,0,0,.293.707l3,3,1.414-1.414ZM12,9h8v2H12Zm0,4h8v9H12Z">
+                        </path>
+                    </svg>
+                </div>
+                <h3>Scheduled Runs Stability</h3>
+                <p>Track end-to-end scheduled architecture runs, failures, and error trends across PowerVS
+                    datacenters.</p>
+            </a>
+            </div>
+
+            <!-- Dashboard Tiles -->
+            <div class="dashboard-tiles">
+                <!-- Error Analysis Tile -->
+                <div class="error-analysis-tile">
+                    <div class="error-header">
+                        <h2>Error analysis</h2>
+                        <a href="dc_scheduled_runs_analytics.html" class="view-all-link">View all →</a>
+                    </div>
+                    <div class="error-total">
+                        <span class="error-total-label">Total errors (<span id="error-month">-</span>):</span>
+                        <span class="error-total-count" id="total-errors">-</span>
+                    </div>
+                    <div class="error-content">
+                        <div class="error-chart-container">
+                            <canvas id="error-chart" width="140" height="140"></canvas>
+                        </div>
+                        <div class="error-legend" id="error-legend">
+                            <!-- Legend will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Runs Tile -->
+                <div class="recent-runs-tile">
+                    <div class="error-header">
+                        <h2>Latest DA Runs</h2>
+                        <a href="dc_scheduled_runs.html" class="view-all-link">View all →</a>
+                    </div>
+                    <div class="runs-total">
+                        <span class="runs-total-label">Total runs:</span>
+                        <span class="runs-total-count" id="total-runs">-</span>
+                    </div>
+                    <div class="recent-errors-list" id="recent-errors-list">
+                        <!-- Recent errors will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carbon Components JavaScript -->
+    <script src="https://unpkg.com/carbon-components@10.58.0/scripts/carbon-components.min.js"></script>
+
+    <!-- Dashboard Tiles JavaScript -->
+    <script src="../assets/js/dashboard_tiles.js"></script>
+
+    <script>
+        // Initialize Carbon components
+        var sideNavElement = document.querySelector('[data-side-nav]');
+        var sideNav = CarbonComponents.SideNav.create(sideNavElement);
+
+        // Handle toggle button - properly toggle the rail state
+        var toggleButton = document.querySelector('.bx--side-nav__toggle');
+        if (toggleButton && sideNav) {
+            toggleButton.addEventListener('click', function () {
+                var isExpanded = sideNavElement.classList.contains('bx--side-nav--expanded');
+                if (isExpanded) {
+                    sideNavElement.classList.remove('bx--side-nav--expanded');
+                    sideNavElement.classList.add('bx--side-nav--rail');
+                } else {
+                    sideNavElement.classList.remove('bx--side-nav--rail');
+                    sideNavElement.classList.add('bx--side-nav--expanded');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
