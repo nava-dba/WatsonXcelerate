@@ -33,6 +33,67 @@
   /** @type {{ role: string; content: string }[]} */
   const conversationHistory = [];
 
+  /** @type {Array|null} cached dashboard runs data */
+  let dashboardData = null;
+
+  // ── Dashboard data loader ─────────────────────────────────────────────────────
+
+  async function loadDashboardData() {
+    if (dashboardData !== null) return dashboardData;
+    try {
+      const resp = await fetch("../data/dc_scheduled_runs.json");
+      if (!resp.ok) return [];
+      dashboardData = await resp.json();
+      return dashboardData;
+    } catch {
+      return [];
+    }
+  }
+
+  function extractDateFromHtml(dateHtml) {
+    // Dates are stored as <a href="...">2026-06-22</a>
+    const match = String(dateHtml).match(/(\d{4}-\d{2}-\d{2})/);
+    return match ? match[1] : null;
+  }
+
+  function buildDashboardContext(runs, days) {
+    const now = new Date();
+    const cutoff = new Date(now);
+    cutoff.setDate(now.getDate() - days);
+
+    const filtered = runs.filter(run => {
+      const d = extractDateFromHtml(run.Date);
+      return d && new Date(d) >= cutoff;
+    });
+
+    if (filtered.length === 0) {
+      return `No runs found in the last ${days} days.`;
+    }
+
+    const lines = [`Dashboard data — last ${days} days (${filtered.length} runs):\n`];
+    filtered.forEach(run => {
+      const date = extractDateFromHtml(run.Date) || run.Date;
+      const errorCount = run.Error?.errorCount ?? 0;
+      const categories = run.Error?.categories?.join(", ") || "none";
+      lines.push(`- [${date}] DC: ${run.DC} | OS: ${run.OS} | Repo: ${run.Repo} | Errors: ${errorCount} (${categories})`);
+    });
+    return lines.join("\n");
+  }
+
+  function detectDaysRequested(text) {
+    // Detect "last N days/hours/weeks" in user message
+    const match = text.match(/last\s+(\d+)\s*(day|days|week|weeks)/i);
+    if (match) {
+      const n = parseInt(match[1]);
+      const unit = match[2].toLowerCase();
+      return unit.startsWith("week") ? n * 7 : n;
+    }
+    // Default context window for data-related questions
+    const dataKeywords = ["error", "fail", "run", "dc", "datacenter", "list", "show", "summary", "recent", "latest"];
+    if (dataKeywords.some(k => text.toLowerCase().includes(k))) return 7;
+    return 0;
+  }
+
   let iamToken = null;
   let iamTokenExpiry = 0; // Unix ms
 
@@ -291,9 +352,20 @@
 
     // Render user message
     appendMessage("user", text);
-    conversationHistory.push({ role: "user", content: text });
     inputEl.value = "";
     autoResizeTextarea(inputEl);
+
+    // Enrich message with dashboard data if the question is data-related
+    const days = detectDaysRequested(text);
+    let enrichedContent = text;
+    if (days > 0) {
+      const runs = await loadDashboardData();
+      if (runs.length > 0) {
+        const context = buildDashboardContext(runs, days);
+        enrichedContent = `${text}\n\n[Dashboard context]\n${context}`;
+      }
+    }
+    conversationHistory.push({ role: "user", content: enrichedContent });
 
     sendBtn.disabled = true;
     appendTypingIndicator();

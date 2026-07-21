@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: watsonxcelerate
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 proxy.py
+    envVars:
+      - key: WATSONX_API_KEY
+        sync: false
+      - key: WATSONX_PROJECT_ID
+        sync: false
+      - key: WATSONX_MODEL_ID
+        value: ibm/granite-3-8b-instruct
+      - key: WATSONX_URL
+        value: https://us-south.ml.cloud.ibm.com
+      - key: PORT
+        value: 8080
