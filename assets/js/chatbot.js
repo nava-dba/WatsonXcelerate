@@ -50,8 +50,10 @@
   let attachedLogContent = null;
   let attachedLogName = null;
 
-  const MAX_FILE_BYTES = 2 * 1024 * 1024; // 2 MB
-  const CHUNK_CHARS    = 6000;             // ~1500 tokens per chunk
+  const MAX_FILE_BYTES  = 2 * 1024 * 1024; // 2 MB
+  const CHUNK_CHARS     = 30000;            // ~7500 tokens — 5× larger chunks = 5× fewer API calls
+  const DIRECT_THRESHOLD = 120000;          // logs under ~30K tokens sent as one call, no chunking
+  const MAX_PARALLEL    = 5;               // max concurrent chunk-summary API calls
 
   // ── DOM helpers ───────────────────────────────────────────────────────────────
 
@@ -186,10 +188,14 @@
       attachedLogContent = e.target.result;
       attachedLogName = file.name;
       const sizeKB = (file.size / 1024).toFixed(0);
-      const chunks = Math.ceil(attachedLogContent.length / CHUNK_CHARS);
-      const hint = chunks > 1
-        ? `${sizeKB} KB · will be analysed in ${chunks} parts`
-        : `${sizeKB} KB`;
+      let hint;
+      if (attachedLogContent.length <= DIRECT_THRESHOLD) {
+        hint = `${sizeKB} KB · direct analysis`;
+      } else {
+        const estChunks = Math.ceil(attachedLogContent.length / CHUNK_CHARS);
+        const batches   = Math.ceil(estChunks / MAX_PARALLEL);
+        hint = `${sizeKB} KB · ~${estChunks} parts in ${batches} parallel batches`;
+      }
       showFileChip(`${file.name}  (${hint})`);
       document.getElementById("chatbot-input").focus();
     };
@@ -548,9 +554,9 @@
     const text = inputEl.value.trim();
     if (!text && !attachedLogContent) return;
 
-    // ── If a log file is attached, use chunked analysis ──────────────────────────
+    // ── If a log file is attached, use optimised analysis ────────────────────────
     if (attachedLogContent) {
-      const logContent  = attachedLogContent;
+      const rawContent  = attachedLogContent;
       const logName     = attachedLogName;
       const userPrompt  = text || "Analyse this log and summarise any errors or issues.";
       const displayText = text
@@ -564,71 +570,94 @@
 
       appendMessage("user", displayText);
 
-      // Split log into chunks
-      const chunks = [];
-      for (let i = 0; i < logContent.length; i += CHUNK_CHARS) {
-        chunks.push(logContent.slice(i, i + CHUNK_CHARS));
-      }
-      const total = chunks.length;
-
       try {
+        // ── Opt 3: Pre-filter — strip pure INFO lines to reduce volume ────────────
+        const lines = rawContent.split("\n");
+        const infoOnlyRe = /^\s*\S+\s+(INFO|DEBUG|TRACE)\b/i;
+        const significantLines = lines.filter(l => !infoOnlyRe.test(l));
+        // If filtering removes >50% of lines keep filtered, otherwise keep all
+        // (avoids over-filtering logs where everything is INFO)
+        const logContent = significantLines.length >= lines.length * 0.5
+          ? significantLines.join("\n")
+          : rawContent;
+
+        const filteredKB  = (logContent.length  / 1024).toFixed(0);
+        const originalKB  = (rawContent.length  / 1024).toFixed(0);
+        const filterNote  = logContent.length < rawContent.length
+          ? ` (filtered to ${filteredKB} KB of ${originalKB} KB — INFO/DEBUG lines removed)`
+          : "";
+
+        // ── Opt 1: Chunk with larger CHUNK_CHARS (30K) ────────────────────────────
+        const chunks = [];
+        for (let i = 0; i < logContent.length; i += CHUNK_CHARS) {
+          chunks.push(logContent.slice(i, i + CHUNK_CHARS));
+        }
+        const total = chunks.length;
+
         let finalUserMessage;
 
-        if (total === 1) {
-          // Small log — send as a single self-contained call
+        if (logContent.length <= DIRECT_THRESHOLD) {
+          // Small enough — send in one direct call, no chunking at all
           finalUserMessage =
-            `Log file: "${logName}"\n\nLog contents:\n\`\`\`\n${chunks[0]}\n\`\`\`\n\nUser question: ${userPrompt}`;
+            `Log file: "${logName}"${filterNote}\n\nLog contents:\n\`\`\`\n${logContent}\n\`\`\`\n\nUser question: ${userPrompt}`;
         } else {
-          // Large log — summarise each chunk independently, then combine
-          // This keeps every API call well within the context window.
-          const summaries = [];
+          // ── Opt 2: Parallel chunk summarisation ───────────────────────────────
+          // Create a single progress bubble
+          const progressId = "chatbot-log-progress";
+          const pw = document.createElement("div");
+          pw.className = "chat-msg assistant";
+          const plbl = document.createElement("div");
+          plbl.className = "msg-label";
+          plbl.textContent = "WatsonX";
+          const progressBubble = document.createElement("div");
+          progressBubble.className = "bubble";
+          progressBubble.id = progressId;
+          pw.appendChild(plbl);
+          pw.appendChild(progressBubble);
+          document.getElementById("chatbot-messages").appendChild(pw);
 
-          for (let i = 0; i < total; i++) {
-            // Update progress in the last progress bubble or add a new one
-            const progressId = "chatbot-log-progress";
-            let progressBubble = document.getElementById(progressId);
-            if (!progressBubble) {
-              const w = document.createElement("div");
-              w.className = "chat-msg assistant";
-              const lbl = document.createElement("div");
-              lbl.className = "msg-label";
-              lbl.textContent = "WatsonX";
-              progressBubble = document.createElement("div");
-              progressBubble.className = "bubble";
-              progressBubble.id = progressId;
-              w.appendChild(lbl);
-              w.appendChild(progressBubble);
-              document.getElementById("chatbot-messages").appendChild(w);
-            }
-            progressBubble.textContent =
-              `Summarising ${logName} — part ${i + 1} / ${total}…`;
-            document.getElementById("chatbot-messages").scrollTop =
-              document.getElementById("chatbot-messages").scrollHeight;
+          progressBubble.textContent =
+            `Analysing ${logName}${filterNote} — 0 / ${total} parts done…`;
 
-            const chunkMessages = [
-              {
-                role: "system",
-                content:
-                  "You are a log analysis assistant. Summarise the following log segment " +
-                  "in 3-5 bullet points. Note errors, warnings, timestamps, and resource names. Be brief and specific.",
-              },
-              {
-                role: "user",
-                content: `Log file: "${logName}" — part ${i + 1} of ${total}:\n\`\`\`\n${chunks[i]}\n\`\`\``,
-              },
-            ];
+          // Track completion count for live progress updates
+          let done = 0;
 
-            const summary = await callWatsonXSilent(chunkMessages);
-            summaries.push(`### Part ${i + 1} / ${total}\n${summary}`);
+          // Run chunks in parallel batches of MAX_PARALLEL
+          const summaries = new Array(total);
+          for (let batch = 0; batch < total; batch += MAX_PARALLEL) {
+            const batchChunks = chunks.slice(batch, batch + MAX_PARALLEL);
+            await Promise.all(
+              batchChunks.map(async (chunk, j) => {
+                const idx = batch + j;
+                const chunkMessages = [
+                  {
+                    role: "system",
+                    content:
+                      "You are a log analysis assistant. Summarise the following log segment " +
+                      "in 3-5 bullet points. Note errors, warnings, timestamps, and resource names. Be brief and specific.",
+                  },
+                  {
+                    role: "user",
+                    content: `Log file: "${logName}" — part ${idx + 1} of ${total}:\n\`\`\`\n${chunk}\n\`\`\``,
+                  },
+                ];
+                const summary = await callWatsonXSilent(chunkMessages);
+                summaries[idx] = `### Part ${idx + 1} / ${total}\n${summary}`;
+                done++;
+                progressBubble.textContent =
+                  `Analysing ${logName}${filterNote} — ${done} / ${total} parts done…`;
+                document.getElementById("chatbot-messages").scrollTop =
+                  document.getElementById("chatbot-messages").scrollHeight;
+              })
+            );
           }
 
           // Remove the progress bubble
-          const pb = document.getElementById("chatbot-log-progress");
+          const pb = document.getElementById(progressId);
           if (pb) pb.closest(".chat-msg").remove();
 
-          // Build a combined summary prompt
           finalUserMessage =
-            `Log file: "${logName}" was split into ${total} parts. ` +
+            `Log file: "${logName}"${filterNote} was split into ${total} parts. ` +
             `Here are the summaries of each part:\n\n${summaries.join("\n\n")}\n\n` +
             `Based on ALL parts above, answer this question: ${userPrompt}`;
         }
