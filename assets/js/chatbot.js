@@ -28,6 +28,16 @@
     "PowerVS Datacenter Status Dashboard. Help the user understand, diagnose, " +
     "and resolve infrastructure errors. Be concise and technical.";
 
+  const LOG_ANALYSIS_SYSTEM_PROMPT =
+    "You are an expert IBM Cloud infrastructure and Terraform log analyst. " +
+    "When analysing logs, always respond using clear markdown formatting:\n" +
+    "- Use `## Section` headers to organise your response (e.g. ## Summary, ## Errors Found, ## Root Cause, ## Resolution Steps)\n" +
+    "- Use bullet points (`- item`) for lists of errors, causes, or steps\n" +
+    "- Use `inline code` for file paths, resource names, error codes, and config keys\n" +
+    "- Use **bold** for severity labels and critical terms\n" +
+    "- Use fenced code blocks (```...```) only for actual log lines or config snippets\n" +
+    "- Be structured, specific, and actionable. Do not write long unbroken paragraphs.";
+
   // ── State ─────────────────────────────────────────────────────────────────────
 
   /** @type {{ role: string; content: string }[]} */
@@ -244,7 +254,19 @@
       lines.forEach((line, idx) => {
         const trimmed = line.trimStart();
 
-        if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+        if (trimmed.startsWith("### ")) {
+          const h = document.createElement("h4");
+          appendInline(h, trimmed.slice(4));
+          fragment.appendChild(h);
+        } else if (trimmed.startsWith("## ")) {
+          const h = document.createElement("h3");
+          appendInline(h, trimmed.slice(3));
+          fragment.appendChild(h);
+        } else if (trimmed.startsWith("# ")) {
+          const h = document.createElement("h3");
+          appendInline(h, trimmed.slice(2));
+          fragment.appendChild(h);
+        } else if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
           // Unordered list item
           const li = document.createElement("li");
           appendInline(li, trimmed.slice(2));
@@ -588,7 +610,7 @@
                 role: "system",
                 content:
                   "You are a log analysis assistant. Summarise the following log segment " +
-                  "concisely, noting any errors, warnings, or anomalies. Be brief.",
+                  "in 3-5 bullet points. Note errors, warnings, timestamps, and resource names. Be brief and specific.",
               },
               {
                 role: "user",
@@ -613,7 +635,7 @@
 
         // Stream the final answer using a fresh isolated context (no history bloat)
         const finalMessages = [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: LOG_ANALYSIS_SYSTEM_PROMPT },
           { role: "user",   content: finalUserMessage },
         ];
 
