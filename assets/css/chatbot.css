@@ -190,6 +190,22 @@
   list-style-type: disc;
 }
 
+.chat-msg.assistant .bubble h3 {
+  font-size: 13.5px;
+  font-weight: 600;
+  margin: 10px 0 4px;
+  color: var(--content-text, #161616);
+  border-bottom: 1px solid var(--nav-border, #e0e0e0);
+  padding-bottom: 2px;
+}
+
+.chat-msg.assistant .bubble h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 8px 0 3px;
+  color: var(--content-text, #161616);
+}
+
 .chat-msg.user .bubble {
   background: #0f62fe;
   color: #ffffff;
@@ -229,13 +245,85 @@
 /* Input row */
 #chatbot-input-row {
   display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 12px 16px;
+  flex-direction: column;
+  padding: 10px 16px 12px;
   border-top: 1px solid var(--nav-border, #e0e0e0);
   background: var(--content-bg, #ffffff);
   flex-shrink: 0;
   border-radius: 0 0 4px 4px;
+  gap: 6px;
+}
+
+/* File chip (hidden until a file is selected) */
+#chatbot-file-chip {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: #e8f1ff;
+  border: 1px solid #a8c4f5;
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #0043ce;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+#chatbot-file-chip.visible {
+  display: flex;
+}
+
+#chatbot-file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#chatbot-file-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #0043ce;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+#chatbot-file-remove:hover { color: #da1e28; }
+
+/* Hidden native file input */
+#chatbot-file-input {
+  display: none;
+}
+
+/* Controls row: upload btn + textarea + send btn */
+#chatbot-input-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+#chatbot-upload {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid var(--nav-border, #e0e0e0);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--content-text-secondary, #525252);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+#chatbot-upload:hover {
+  background: var(--nav-bg-primary, #f4f4f4);
+  border-color: #0f62fe;
+  color: #0f62fe;
 }
 
 #chatbot-input {
@@ -292,4 +380,7 @@
   #chatbot-bubble svg { fill: #161616; }
   .chat-msg.assistant .bubble pre,
   .chat-msg.assistant .bubble code { background: #2d2d2d; border-color: #444; }
+  #chatbot-file-chip { background: #1c2a3a; border-color: #4a6fa5; color: #a8c4f5; }
+  #chatbot-file-remove { color: #a8c4f5; }
+  #chatbot-upload { color: #a8c4f5; }
 }

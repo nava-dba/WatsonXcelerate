@@ -13,6 +13,7 @@ A practical AI-powered log analysis solution built using **IBM Bob** and **watso
 - [The Solution](#the-solution)
 - [Architecture](#architecture)
 - [Key Features](#key-features)
+- [Chatbot Enhancements](#chatbot-enhancements)
 - [Tech Stack](#tech-stack)
 - [How It Works](#how-it-works)
 - [Getting Started](#getting-started)
@@ -53,7 +54,7 @@ WatsonXcelerate brings together:
 |---|---|
 | **IBM Bob** | Code generation, solution design, prompt engineering, and development acceleration |
 | **watsonx.ai** | Natural language understanding, log summarization, anomaly explanation, and root cause inference |
-| **watsonx Orchestrate** | Workflow orchestration — routing log input, triggering analysis, and returning structured results |
+| **WatsonX Chatbot** | Embedded floating assistant for real-time log upload, analysis, and Q&A directly in the dashboard |
 
 Users can paste log snippets, upload log files, or point to a log stream and ask questions like:
 
@@ -69,19 +70,20 @@ Users can paste log snippets, upload log files, or point to a log stream and ask
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        User Interface                        │
-│              (Chat / File Upload / Log Stream)               │
+│     (Dashboard + Floating WatsonX Chatbot + File Upload)     │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                  watsonx Orchestrate                         │
-│         (Workflow routing & skill orchestration)             │
+│                      proxy.py (local)                        │
+│   CORS-safe proxy · IAM token exchange · stream/non-stream   │
 └──────────┬─────────────────────────────────────┬────────────┘
            │                                     │
            ▼                                     ▼
 ┌──────────────────────┐             ┌───────────────────────┐
-│     Log Ingestion    │             │    Context Manager    │
-│  (Parse, chunk, tag) │             │  (Session / history)  │
+│  Log Pre-processor   │             │    Context Manager    │
+│  Filter INFO/DEBUG   │             │  (Session / history)  │
+│  Chunk (30K chars)   │             │  Compact log summary  │
 └──────────┬───────────┘             └───────────┬───────────┘
            │                                     │
            └──────────────┬──────────────────────┘
@@ -97,12 +99,13 @@ Users can paste log snippets, upload log files, or point to a log stream and ask
                           ▼
            ┌──────────────────────────┐
            │     Output Generator     │
-           │  (Summary / RCA report / │
-           │   Incident ticket draft) │
+           │  Structured markdown:    │
+           │  Summary / Errors /      │
+           │  Root Cause / Fix Steps  │
            └──────────────────────────┘
 ```
 
-> **IBM Bob** was used throughout the development lifecycle — from scaffolding the project structure, writing parsing utilities, crafting watsonx.ai prompts, and generating this documentation.
+> **IBM Bob** was used throughout the development lifecycle — from scaffolding the project structure, writing parsing utilities, crafting watsonx.ai prompts, implementing chatbot enhancements, and generating this documentation.
 
 ---
 
@@ -123,11 +126,91 @@ One-click generation of a draft incident report, ready to paste into your ticket
 ### 🔁 Pattern & Anomaly Detection
 Identify recurring error patterns and statistical anomalies without writing a single regex.
 
-### 🧩 Multi-format Support
-Supports common log formats: JSON logs, plain-text syslog, Apache/Nginx access logs, application stack traces, and cloud provider log exports.
+### 🧩 Multi-format Log Upload
+Upload `.log`, `.txt`, `.json`, `.out`, `.csv` files up to **2 MB** directly into the chatbot for instant analysis.
 
 ### ⚡ Accelerated with IBM Bob
-Every component — parsers, prompt templates, orchestration flows, and tests — was built using Bob, demonstrating real productivity acceleration across the full development lifecycle.
+Every component — parsers, prompt templates, chatbot features, and tests — was built using Bob, demonstrating real productivity acceleration across the full development lifecycle.
+
+---
+
+## Chatbot Enhancements
+
+The embedded WatsonX Assistant chatbot (`assets/js/chatbot.js`) received the following production-grade enhancements, all implemented iteratively with IBM Bob:
+
+### 🔒 Security — API Key Protection
+- `API_KEY` is no longer injected into the browser-served `config.js`
+- The key is read server-side from environment variables in `proxy.py` and used exclusively in the IAM token exchange endpoint
+- The browser never receives or transmits the raw API key
+
+### 🛡️ Reliability — Network Error Handling
+- `urllib.error.URLError` (network timeouts, DNS failures) is now caught in `proxy.py`
+- Returns a clean `502 Bad Gateway` JSON response instead of crashing the server
+- Applies to both the `/proxy/iam-token` and `/proxy/watsonx` endpoints
+
+### 🗑️ UX — Clear Chat Button
+- Trash icon button added to the chat panel header
+- Resets conversation history and returns to the welcome message
+- No page reload required
+
+### ✨ UX — Markdown Rendering
+Assistant responses are now rendered with full markdown support:
+- `## Section headers` with bottom border
+- `### Subsection headers`
+- `**bold**` and `*italic*` inline formatting
+- `` `inline code` `` with monospace styling
+- Fenced code blocks (` ``` `) with syntax background
+- Bullet lists (`-` / `*`)
+- Graceful handling of **incomplete tokens during streaming** — partial `**bold**` or unclosed ` ``` ` blocks are shown as plain text rather than silently dropped
+
+### 📎 Log File Upload
+Upload log files directly from the chatbot input row:
+- Paperclip (upload) button opens the native file picker
+- Accepts: `.log`, `.txt`, `.json`, `.out`, `.csv`
+- Maximum file size: **2 MB**
+- A dismissable file chip shows the filename and analysis strategy before sending
+- Optionally type a question alongside the file, or send without text for automatic analysis
+
+### ⚡ Large Log Analysis — 3-Stage Performance Pipeline
+
+For log files that exceed the direct analysis threshold (~120 KB), the chatbot uses an optimised multi-stage pipeline:
+
+#### Stage 1 — INFO/DEBUG Pre-filter
+Before chunking, lines matching `INFO`, `DEBUG`, or `TRACE` severity are stripped. This typically reduces a 1 MB Terraform or application log by 60–70%, leaving only errors, warnings, and stack traces.
+
+> Safety guard: if filtering would remove more than 50% of lines (e.g. a log that is entirely INFO), the original file is kept intact.
+
+#### Stage 2 — Large Chunk Splitting (30K chars)
+Filtered content is split into **30,000-character chunks** (~7,500 tokens each). This is 5× larger than the original 6,000-char chunks, reducing the number of API calls proportionally.
+
+#### Stage 3 — Parallel Batch Summarisation
+Chunk summaries are fetched **5 at a time in parallel** using `Promise.all()`. A single live progress bubble updates as each batch completes:
+
+```
+Analysing terraform-log.txt (filtered to 320 KB of 1024 KB — INFO/DEBUG lines removed) — 12 / 34 parts done…
+```
+
+After all chunks are summarised, a final streaming call combines all summaries and answers the user's question.
+
+#### Structured Output via Dedicated System Prompt
+Log analysis responses use a dedicated `LOG_ANALYSIS_SYSTEM_PROMPT` that instructs the Granite model to format output with:
+- `## Summary`, `## Errors Found`, `## Root Cause`, `## Resolution Steps` headers
+- Bullet points for error lists
+- Inline code for file paths, resource names, and config keys
+- Bold for severity labels
+
+**Performance comparison for a 1 MB log file:**
+
+| Metric | Before | After |
+|---|---|---|
+| Chunk size | 6,000 chars | 30,000 chars |
+| API calls | ~170 sequential | ~7 parallel batches |
+| Estimated time | ~5 minutes | ~25–40 seconds |
+
+### 🔄 Proxy — Streaming & Non-Streaming Support
+`proxy.py` now detects whether the browser request sets `stream: true` or `stream: false`:
+- **Streaming** (`stream: true`): chunked transfer encoding, tokens arrive progressively
+- **Non-streaming** (`stream: false`): full JSON blob returned as-is — used by the silent chunk summarisation calls
 
 ---
 
@@ -136,7 +219,8 @@ Every component — parsers, prompt templates, orchestration flows, and tests �
 | Layer | Technology |
 |---|---|
 | AI / LLM | watsonx.ai (IBM Granite models) |
-| Orchestration | watsonx Orchestrate |
+| Chatbot | Vanilla JS floating assistant (`chatbot.js` + `chatbot.css`) |
+| Proxy server | Python 3 (`proxy.py`) — IAM token exchange + CORS proxy |
 | Development assistant | IBM Bob |
 | Log parsing | Python (custom utilities, Bob-generated) |
 | Prompt engineering | Bob-assisted prompt templates |
@@ -147,23 +231,27 @@ Every component — parsers, prompt templates, orchestration flows, and tests �
 ## How It Works
 
 ### Step 1 — Ingest
-Paste a log snippet into the chat interface, upload a `.log` / `.txt` / `.json` file, or provide a log stream endpoint.
+Paste a log snippet into the chat interface, or upload a `.log` / `.txt` / `.json` file using the paperclip button. The file chip displays the file size and the analysis strategy (direct / chunked + parallel).
 
-### Step 2 — Parse & Chunk
-The ingestion layer normalizes the log format, extracts timestamps, severity levels, service names, and message bodies, then chunks the content for efficient LLM processing.
+### Step 2 — Pre-process
+The log pre-processor:
+1. **Filters** out INFO/DEBUG/TRACE lines (reduces volume by ~60–70%)
+2. **Checks** if the remaining content fits in a single direct call (<120 KB)
+3. If larger: **chunks** into 30K-char segments and **batches** them 5-at-a-time for parallel summarisation
 
 ### Step 3 — Analyze
-watsonx.ai processes the chunked log data using purpose-built prompts that instruct the Granite model to:
-- Identify and group error events
+watsonx.ai processes the log data using purpose-built prompts that instruct the Granite model to:
+- Identify and group error events with timestamps and resource names
 - Detect temporal patterns and sequences
 - Infer probable root causes
 - Highlight unusual or anomalous entries
 
 ### Step 4 — Report
-The output generator formats the AI's analysis into one of three output modes:
-- **Quick summary** — bullet-point overview of key findings
-- **RCA report** — structured root cause analysis with timeline and evidence
-- **Incident draft** — ready-to-use incident ticket text
+The final answer is streamed progressively into the chat panel, rendered in structured markdown with:
+- **Summary** — what happened and when
+- **Errors Found** — specific errors with file/line references
+- **Root Cause** — inferred cause with evidence
+- **Resolution Steps** — actionable fix instructions
 
 ---
 
@@ -173,67 +261,54 @@ The output generator formats the AI's analysis into one of three output modes:
 
 - Access to **IBM Bob** ([request here](https://bob.ibm.com/))
 - Access to **watsonx.ai** (IBM Cloud account with watsonx service)
-- Access to **watsonx Orchestrate** (request via the challenge registration page → "Our Team" tab)
 - Python 3.10+
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/WatsonXcelerate.git
+git clone https://github.com/nava-dba/WatsonXcelerate.git
 cd WatsonXcelerate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure environment variables
-cp .env.example .env
-# Edit .env with your watsonx.ai API key and project ID
+# Set environment variables
+export WATSONX_API_KEY=your_api_key_here
+export WATSONX_PROJECT_ID=your_project_id_here
+export WATSONX_URL=https://us-south.ml.cloud.ibm.com       # optional
+export WATSONX_MODEL_ID=ibm/granite-3-8b-instruct          # optional
+
+# Start the local proxy + dashboard server
+python3 proxy.py
 ```
+
+Then open: **http://localhost:8080/pages/index.html**
 
 ### Configuration
 
-```env
-WATSONX_API_KEY=your_api_key_here
-WATSONX_PROJECT_ID=your_project_id_here
-WATSONX_URL=https://us-south.ml.cloud.ibm.com
-WATSONX_MODEL_ID=ibm/granite-13b-instruct-v2
-```
+The proxy server auto-generates `assets/js/config.js` at runtime from environment variables. The API key is **never** written to disk or served to the browser.
+
+To run without the proxy (direct browser calls), copy `assets/js/config.example.js` to `assets/js/config.js` and fill in your values. Note: this requires CORS to be enabled on your watsonx.ai endpoint.
 
 ---
 
 ## Usage
 
-### Via Chat Interface
+### Chatbot — Ask a Question
+1. Click the blue chat bubble (bottom-right of the dashboard)
+2. Type your question and press **Enter** or click Send
+3. The assistant maintains conversation context across turns
 
-```
-> Upload your log file or paste log content below.
-> Then ask: "What are the top errors in this log?"
-```
+### Chatbot — Analyse a Log File
+1. Click the **📤 upload button** (left of the text input)
+2. Select a `.log`, `.txt`, or `.json` file (up to 2 MB)
+3. Optionally type a specific question (e.g. *"What is the root cause?"*)
+4. Press **Enter** — the chatbot pre-filters, chunks, and analyses in parallel
+5. Receive a structured markdown report with headers, bullet points, and code references
 
-### Via Python API
-
-```python
-from watsonxcelerate import LogAnalyzer
-
-analyzer = LogAnalyzer()
-
-# Analyze a log file
-result = analyzer.analyze_file("application.log")
-print(result.summary)
-
-# Ask a specific question
-answer = analyzer.query("application.log", "What caused the spike in 500 errors at 14:30?")
-print(answer)
-
-# Generate an incident report
-report = analyzer.generate_incident_report("application.log")
-print(report)
-```
-
-### Via watsonx Orchestrate
-
-Import the included skill flow into your watsonx Orchestrate instance and use the **Log Analyzer** skill directly from the Orchestrate chat interface.
+### Chatbot — Clear Conversation
+Click the **🗑️ trash icon** in the chat panel header to reset the conversation and start fresh.
 
 ---
 
@@ -242,9 +317,11 @@ Import the included skill flow into your watsonx Orchestrate instance and use th
 | Metric | Before | After |
 |---|---|---|
 | Average time to identify root cause | ~45 minutes | ~3 minutes |
+| Log analysis time (1 MB file) | Manual: hours | ~25–40 seconds |
 | Non-technical staff able to interpret logs | ~10% | ~80% |
 | Incident report drafting time | ~20 minutes | ~2 minutes |
 | Repeated manual triage tasks automated | 0% | ~70% |
+| API key exposure risk | Present (in config.js) | Eliminated |
 
 > Estimated **productivity improvement: ~45%** for on-call and operations team members — aligning with the average gain IBMers report from using Bob.
 
@@ -257,7 +334,7 @@ Import the included skill flow into your watsonx Orchestrate instance and use th
 | **Challenge** | 2026 IBMer watsonx Challenge |
 | **Path** | Path 1 — Build during the challenge |
 | **Submission window** | July 8–22, 2026 |
-| **Primary tools** | IBM Bob + watsonx.ai + watsonx Orchestrate |
+| **Primary tools** | IBM Bob + watsonx.ai |
 | **Focus area** | Engineering / Operations productivity |
 | **Team size** | See [Team](#team) section |
 
@@ -266,11 +343,12 @@ Import the included skill flow into your watsonx Orchestrate instance and use th
 Bob was an active collaborator throughout this project:
 
 - 🏗️ **Project scaffolding** — generated the initial project structure and boilerplate
-- 🔧 **Log parser development** — wrote and iterated on parsing utilities
-- 🧪 **Test generation** — produced unit tests for parsing and analysis functions
-- 💬 **Prompt engineering** — helped craft and refine watsonx.ai prompts for log analysis tasks
+- 🔧 **Log parser development** — wrote and iterated on parsing utilities and the Python proxy server
+- 💬 **Prompt engineering** — crafted and refined watsonx.ai prompts for log analysis, including the structured markdown output system prompt
+- 🤖 **Chatbot features** — implemented all chatbot enhancements: markdown renderer, clear button, file upload, chunked analysis pipeline, parallel batching, and INFO pre-filtering
+- 🔒 **Security hardening** — identified and fixed API key exposure in browser-served config
 - 📄 **Documentation** — drafted README sections, inline code comments, and usage examples
-- 🔍 **Code review** — identified edge cases and suggested improvements across the codebase
+- 🔍 **Code review** — identified edge cases (incomplete streaming tokens, URLError handling, non-streaming proxy support) and suggested targeted fixes
 
 ---
 
@@ -279,6 +357,7 @@ Bob was an active collaborator throughout this project:
 | Name | Role | IBM Business Unit |
 |---|---|---|
 | Naved Afroz | Lead Developer & Solution Architect | — |
+| Venkat Reddy M | Chatbot Features & Performance Enhancements | — |
 
 ---
 

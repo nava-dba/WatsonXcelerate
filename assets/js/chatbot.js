@@ -28,6 +28,16 @@
     "PowerVS Datacenter Status Dashboard. Help the user understand, diagnose, " +
     "and resolve infrastructure errors. Be concise and technical.";
 
+  const LOG_ANALYSIS_SYSTEM_PROMPT =
+    "You are an expert IBM Cloud infrastructure and Terraform log analyst. " +
+    "When analysing logs, always respond using clear markdown formatting:\n" +
+    "- Use `## Section` headers to organise your response (e.g. ## Summary, ## Errors Found, ## Root Cause, ## Resolution Steps)\n" +
+    "- Use bullet points (`- item`) for lists of errors, causes, or steps\n" +
+    "- Use `inline code` for file paths, resource names, error codes, and config keys\n" +
+    "- Use **bold** for severity labels and critical terms\n" +
+    "- Use fenced code blocks (```...```) only for actual log lines or config snippets\n" +
+    "- Be structured, specific, and actionable. Do not write long unbroken paragraphs.";
+
   // ── State ─────────────────────────────────────────────────────────────────────
 
   /** @type {{ role: string; content: string }[]} */
@@ -35,6 +45,15 @@
 
   let iamToken = null;
   let iamTokenExpiry = 0; // Unix ms
+
+  /** Attached log file content (null when no file is attached) */
+  let attachedLogContent = null;
+  let attachedLogName = null;
+
+  const MAX_FILE_BYTES  = 2 * 1024 * 1024; // 2 MB
+  const CHUNK_CHARS     = 30000;            // ~7500 tokens — 5× larger chunks = 5× fewer API calls
+  const DIRECT_THRESHOLD = 120000;          // logs under ~30K tokens sent as one call, no chunking
+  const MAX_PARALLEL    = 5;               // max concurrent chunk-summary API calls
 
   // ── DOM helpers ───────────────────────────────────────────────────────────────
 
@@ -79,17 +98,31 @@
 
         <!-- Input row -->
         <div id="chatbot-input-row">
-          <textarea
-            id="chatbot-input"
-            rows="1"
-            placeholder="Describe an error or ask a question…"
-            aria-label="Chat input"
-          ></textarea>
-          <button id="chatbot-send" aria-label="Send message">
-            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M27.45 15.11l-22-11a1 1 0 00-1.08.12 1 1 0 00-.27 1L7 16 4.1 26.77A1 1 0 005 28a1 1 0 00.45-.11l22-11a1 1 0 000-1.78zM6.2 25.37L8.6 16.8H18v-1.6H8.6L6.2 6.63 24.76 16z"/>
-            </svg>
-          </button>
+          <!-- File chip shown when a log file is attached -->
+          <div id="chatbot-file-chip">
+            <span id="chatbot-file-name"></span>
+            <button id="chatbot-file-remove" aria-label="Remove attached file" title="Remove file">✕</button>
+          </div>
+          <div id="chatbot-input-controls">
+            <!-- Hidden native file picker -->
+            <input type="file" id="chatbot-file-input" accept=".log,.txt,.json,.out,.csv" aria-label="Upload log file" tabindex="-1" />
+            <button id="chatbot-upload" aria-label="Attach log file" title="Attach log file (.log .txt .json)">
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="18" height="18" fill="currentColor">
+                <path d="M28 18v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8h2v8h20v-8zM16 4l-6 6 1.41 1.41L15 7.83V22h2V7.83l3.59 3.58L22 10z"/>
+              </svg>
+            </button>
+            <textarea
+              id="chatbot-input"
+              rows="1"
+              placeholder="Describe an error or ask a question…"
+              aria-label="Chat input"
+            ></textarea>
+            <button id="chatbot-send" aria-label="Send message">
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M27.45 15.11l-22-11a1 1 0 00-1.08.12 1 1 0 00-.27 1L7 16 4.1 26.77A1 1 0 005 28a1 1 0 00.45-.11l22-11a1 1 0 000-1.78zM6.2 25.37L8.6 16.8H18v-1.6H8.6L6.2 6.63 24.76 16z"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
       </div>
@@ -121,6 +154,52 @@
     appendAssistantMessage(
       "Hi! I'm your WatsonX assistant. Paste an error message or ask me anything about your infrastructure."
     );
+  }
+
+  // ── Log file upload ───────────────────────────────────────────────────────────
+
+  function showFileChip(name) {
+    document.getElementById("chatbot-file-name").textContent = name;
+    document.getElementById("chatbot-file-chip").classList.add("visible");
+    document.getElementById("chatbot-input").placeholder = "Ask a question about the log…";
+  }
+
+  function removeFile() {
+    attachedLogContent = null;
+    attachedLogName = null;
+    document.getElementById("chatbot-file-chip").classList.remove("visible");
+    document.getElementById("chatbot-file-input").value = "";
+    document.getElementById("chatbot-input").placeholder = "Describe an error or ask a question…";
+  }
+
+  function handleFileSelect(file) {
+    if (!file) return;
+
+    if (file.size > MAX_FILE_BYTES) {
+      appendAssistantMessage(
+        `⚠️ File too large: **${file.name}** is ${(file.size / 1024).toFixed(0)} KB. Maximum allowed is 2 MB.`
+      );
+      document.getElementById("chatbot-file-input").value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      attachedLogContent = e.target.result;
+      attachedLogName = file.name;
+      const sizeKB = (file.size / 1024).toFixed(0);
+      let hint;
+      if (attachedLogContent.length <= DIRECT_THRESHOLD) {
+        hint = `${sizeKB} KB · direct analysis`;
+      } else {
+        const estChunks = Math.ceil(attachedLogContent.length / CHUNK_CHARS);
+        const batches   = Math.ceil(estChunks / MAX_PARALLEL);
+        hint = `${sizeKB} KB · ~${estChunks} parts in ${batches} parallel batches`;
+      }
+      showFileChip(`${file.name}  (${hint})`);
+      document.getElementById("chatbot-input").focus();
+    };
+    reader.readAsText(file);
   }
 
   // ── Minimal Markdown renderer ─────────────────────────────────────────────────
@@ -181,7 +260,19 @@
       lines.forEach((line, idx) => {
         const trimmed = line.trimStart();
 
-        if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+        if (trimmed.startsWith("### ")) {
+          const h = document.createElement("h4");
+          appendInline(h, trimmed.slice(4));
+          fragment.appendChild(h);
+        } else if (trimmed.startsWith("## ")) {
+          const h = document.createElement("h3");
+          appendInline(h, trimmed.slice(3));
+          fragment.appendChild(h);
+        } else if (trimmed.startsWith("# ")) {
+          const h = document.createElement("h3");
+          appendInline(h, trimmed.slice(2));
+          fragment.appendChild(h);
+        } else if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
           // Unordered list item
           const li = document.createElement("li");
           appendInline(li, trimmed.slice(2));
@@ -325,21 +416,14 @@
   // ── WatsonX chat API call ─────────────────────────────────────────────────────
 
   /**
-   * Send the full conversation to watsonx.ai /ml/v1/text/chat and stream the
-   * response back, updating `streamBubble` progressively.
-   *
-   * @param {HTMLElement} streamBubble  - DOM element to stream text into
+   * Low-level: POST an explicit messages array to watsonx.ai and stream back into streamBubble.
+   * Does NOT touch conversationHistory — callers manage context themselves.
    */
-  async function callWatsonX(streamBubble) {
+  async function callWatsonXWithMessages(messages, streamBubble, maxTokens) {
     const token = await getIamToken();
     const endpoint = WATSONX_CONFIG.PROXY
       ? "/proxy/watsonx"
       : `${WATSONX_CONFIG.URL}/ml/v1/text/chat?version=2024-05-01`;
-
-    const messages = [
-      { role: "system", content: SYSTEM_PROMPT },
-      ...conversationHistory,
-    ];
 
     const resp = await fetch(endpoint, {
       method: "POST",
@@ -352,7 +436,7 @@
         project_id: WATSONX_CONFIG.PROJECT_ID,
         messages,
         parameters: {
-          max_new_tokens: 1024,
+          max_new_tokens: maxTokens || 2048,
           temperature: 0.3,
         },
         stream: true,
@@ -413,17 +497,214 @@
     return accumulated;
   }
 
+  /**
+   * High-level: send the current conversationHistory to watsonx and stream into streamBubble.
+   */
+  async function callWatsonX(streamBubble) {
+    const messages = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...conversationHistory,
+    ];
+    return callWatsonXWithMessages(messages, streamBubble, 2048);
+  }
+
+  /**
+   * Silent (non-streaming) single call — returns the full text response.
+   * Used to summarise individual log chunks without a visible bubble.
+   */
+  async function callWatsonXSilent(messages) {
+    const token = await getIamToken();
+    const endpoint = WATSONX_CONFIG.PROXY
+      ? "/proxy/watsonx"
+      : `${WATSONX_CONFIG.URL}/ml/v1/text/chat?version=2024-05-01`;
+
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        model_id: WATSONX_CONFIG.MODEL_ID,
+        project_id: WATSONX_CONFIG.PROJECT_ID,
+        messages,
+        parameters: { max_new_tokens: 512, temperature: 0.2 },
+        stream: false,
+      }),
+    });
+
+    if (!resp.ok) {
+      const err = await resp.text();
+      throw new Error(`watsonx API error (${resp.status}): ${err}`);
+    }
+
+    const data = await resp.json();
+    return (
+      data?.choices?.[0]?.message?.content ??
+      data?.results?.[0]?.generated_text ??
+      ""
+    );
+  }
+
   // ── Send message handler ──────────────────────────────────────────────────────
 
   async function handleSend() {
     const inputEl = document.getElementById("chatbot-input");
     const sendBtn = document.getElementById("chatbot-send");
     const text = inputEl.value.trim();
-    if (!text) return;
+    if (!text && !attachedLogContent) return;
 
-    // Render user message
-    appendMessage("user", text);
-    conversationHistory.push({ role: "user", content: text });
+    // ── If a log file is attached, use optimised analysis ────────────────────────
+    if (attachedLogContent) {
+      const rawContent  = attachedLogContent;
+      const logName     = attachedLogName;
+      const userPrompt  = text || "Analyse this log and summarise any errors or issues.";
+      const displayText = text
+        ? `📎 **${logName}** — ${text}`
+        : `📎 **${logName}** — Analyse this log`;
+
+      removeFile();
+      inputEl.value = "";
+      autoResizeTextarea(inputEl);
+      sendBtn.disabled = true;
+
+      appendMessage("user", displayText);
+
+      try {
+        // ── Opt 3: Pre-filter — strip pure INFO lines to reduce volume ────────────
+        const lines = rawContent.split("\n");
+        const infoOnlyRe = /^\s*\S+\s+(INFO|DEBUG|TRACE)\b/i;
+        const significantLines = lines.filter(l => !infoOnlyRe.test(l));
+        // If filtering removes >50% of lines keep filtered, otherwise keep all
+        // (avoids over-filtering logs where everything is INFO)
+        const logContent = significantLines.length >= lines.length * 0.5
+          ? significantLines.join("\n")
+          : rawContent;
+
+        const filteredKB  = (logContent.length  / 1024).toFixed(0);
+        const originalKB  = (rawContent.length  / 1024).toFixed(0);
+        const filterNote  = logContent.length < rawContent.length
+          ? ` (filtered to ${filteredKB} KB of ${originalKB} KB — INFO/DEBUG lines removed)`
+          : "";
+
+        // ── Opt 1: Chunk with larger CHUNK_CHARS (30K) ────────────────────────────
+        const chunks = [];
+        for (let i = 0; i < logContent.length; i += CHUNK_CHARS) {
+          chunks.push(logContent.slice(i, i + CHUNK_CHARS));
+        }
+        const total = chunks.length;
+
+        let finalUserMessage;
+
+        if (logContent.length <= DIRECT_THRESHOLD) {
+          // Small enough — send in one direct call, no chunking at all
+          finalUserMessage =
+            `Log file: "${logName}"${filterNote}\n\nLog contents:\n\`\`\`\n${logContent}\n\`\`\`\n\nUser question: ${userPrompt}`;
+        } else {
+          // ── Opt 2: Parallel chunk summarisation ───────────────────────────────
+          // Create a single progress bubble
+          const progressId = "chatbot-log-progress";
+          const pw = document.createElement("div");
+          pw.className = "chat-msg assistant";
+          const plbl = document.createElement("div");
+          plbl.className = "msg-label";
+          plbl.textContent = "WatsonX";
+          const progressBubble = document.createElement("div");
+          progressBubble.className = "bubble";
+          progressBubble.id = progressId;
+          pw.appendChild(plbl);
+          pw.appendChild(progressBubble);
+          document.getElementById("chatbot-messages").appendChild(pw);
+
+          progressBubble.textContent =
+            `Analysing ${logName}${filterNote} — 0 / ${total} parts done…`;
+
+          // Track completion count for live progress updates
+          let done = 0;
+
+          // Run chunks in parallel batches of MAX_PARALLEL
+          const summaries = new Array(total);
+          for (let batch = 0; batch < total; batch += MAX_PARALLEL) {
+            const batchChunks = chunks.slice(batch, batch + MAX_PARALLEL);
+            await Promise.all(
+              batchChunks.map(async (chunk, j) => {
+                const idx = batch + j;
+                const chunkMessages = [
+                  {
+                    role: "system",
+                    content:
+                      "You are a log analysis assistant. Summarise the following log segment " +
+                      "in 3-5 bullet points. Note errors, warnings, timestamps, and resource names. Be brief and specific.",
+                  },
+                  {
+                    role: "user",
+                    content: `Log file: "${logName}" — part ${idx + 1} of ${total}:\n\`\`\`\n${chunk}\n\`\`\``,
+                  },
+                ];
+                const summary = await callWatsonXSilent(chunkMessages);
+                summaries[idx] = `### Part ${idx + 1} / ${total}\n${summary}`;
+                done++;
+                progressBubble.textContent =
+                  `Analysing ${logName}${filterNote} — ${done} / ${total} parts done…`;
+                document.getElementById("chatbot-messages").scrollTop =
+                  document.getElementById("chatbot-messages").scrollHeight;
+              })
+            );
+          }
+
+          // Remove the progress bubble
+          const pb = document.getElementById(progressId);
+          if (pb) pb.closest(".chat-msg").remove();
+
+          finalUserMessage =
+            `Log file: "${logName}"${filterNote} was split into ${total} parts. ` +
+            `Here are the summaries of each part:\n\n${summaries.join("\n\n")}\n\n` +
+            `Based on ALL parts above, answer this question: ${userPrompt}`;
+        }
+
+        // Stream the final answer using a fresh isolated context (no history bloat)
+        const finalMessages = [
+          { role: "system", content: LOG_ANALYSIS_SYSTEM_PROMPT },
+          { role: "user",   content: finalUserMessage },
+        ];
+
+        const msgList = document.getElementById("chatbot-messages");
+        const wrapper  = document.createElement("div");
+        wrapper.className = "chat-msg assistant";
+        const label    = document.createElement("div");
+        label.className = "msg-label";
+        label.textContent = "WatsonX";
+        const bubble   = document.createElement("div");
+        bubble.className = "bubble";
+        wrapper.appendChild(label);
+        wrapper.appendChild(bubble);
+        msgList.appendChild(wrapper);
+        msgList.scrollTop = msgList.scrollHeight;
+
+        const fullReply = await callWatsonXWithMessages(finalMessages, bubble, 2048);
+
+        if (!fullReply) {
+          bubble.textContent = "(No response received — please try again.)";
+        }
+        // Store a compact summary in history so follow-up questions work
+        conversationHistory.push({ role: "user",      content: `[Analysed log: ${logName}] ${userPrompt}` });
+        conversationHistory.push({ role: "assistant", content: fullReply });
+      } catch (err) {
+        appendAssistantMessage(
+          `⚠️ Error: ${err.message || "Could not reach WatsonX. Check your API key and network."}`
+        );
+        console.error("[chatbot]", err);
+      } finally {
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }
+      return;
+    }
+
+    // ── Normal text-only message ──────────────────────────────────────────────────
+    const userContent = text;
+    appendMessage("user", userContent);
+    conversationHistory.push({ role: "user", content: userContent });
     inputEl.value = "";
     autoResizeTextarea(inputEl);
 
@@ -431,7 +712,6 @@
     appendTypingIndicator();
 
     try {
-      // Insert placeholder assistant bubble for streaming
       removeTypingIndicator();
       const msgList = document.getElementById("chatbot-messages");
       const wrapper = document.createElement("div");
@@ -481,6 +761,15 @@
     document.getElementById("chatbot-bubble").addEventListener("click", openPanel);
     document.getElementById("chatbot-clear").addEventListener("click", clearChat);
     document.getElementById("chatbot-close").addEventListener("click", closePanel);
+
+    // File upload
+    document.getElementById("chatbot-upload").addEventListener("click", () => {
+      document.getElementById("chatbot-file-input").click();
+    });
+    document.getElementById("chatbot-file-input").addEventListener("change", (e) => {
+      handleFileSelect(e.target.files[0]);
+    });
+    document.getElementById("chatbot-file-remove").addEventListener("click", removeFile);
 
     const input = document.getElementById("chatbot-input");
     input.addEventListener("input", () => autoResizeTextarea(input));

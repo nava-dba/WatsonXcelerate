@@ -154,13 +154,20 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
 
     # ------------------------------------------------------------------
-    # Proxy: POST /proxy/watsonx  →  watsonx.ai chat endpoint (streaming)
+    # Proxy: POST /proxy/watsonx  →  watsonx.ai chat endpoint
+    # Supports both streaming (stream:true) and non-streaming (stream:false)
     # ------------------------------------------------------------------
     def _proxy_watsonx(self):
         content_length = int(self.headers.get("Content-Length", 0))
         raw_body = self.rfile.read(content_length)
 
         wx_endpoint = f"{WX_URL}/ml/v1/text/chat?version=2024-05-01"
+
+        # Detect whether the caller requested streaming
+        try:
+            is_streaming = json.loads(raw_body).get("stream", True)
+        except Exception:
+            is_streaming = True
 
         # Read the Authorization header forwarded from the browser
         auth = self.headers.get("Authorization", "")
@@ -177,26 +184,36 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
 
         try:
             with urllib.request.urlopen(req) as resp:
-                # Stream the response back chunk by chunk
-                self.send_response(200)
-                self.send_header("Content-Type", resp.headers.get("Content-Type", "application/json"))
-                self.send_header("Transfer-Encoding", "chunked")
-                for k, v in CORS_HEADERS.items():
-                    self.send_header(k, v)
-                self.end_headers()
+                content_type = resp.headers.get("Content-Type", "application/json")
+                if is_streaming:
+                    # Stream back chunk by chunk using HTTP chunked encoding
+                    self.send_response(200)
+                    self.send_header("Content-Type", content_type)
+                    self.send_header("Transfer-Encoding", "chunked")
+                    for k, v in CORS_HEADERS.items():
+                        self.send_header(k, v)
+                    self.end_headers()
 
-                while True:
-                    chunk = resp.read(4096)
-                    if not chunk:
-                        break
-                    # Write HTTP chunked encoding
-                    self.wfile.write(f"{len(chunk):X}\r\n".encode())
-                    self.wfile.write(chunk)
-                    self.wfile.write(b"\r\n")
+                    while True:
+                        chunk = resp.read(4096)
+                        if not chunk:
+                            break
+                        self.wfile.write(f"{len(chunk):X}\r\n".encode())
+                        self.wfile.write(chunk)
+                        self.wfile.write(b"\r\n")
+                        self.wfile.flush()
+                    self.wfile.write(b"0\r\n\r\n")
                     self.wfile.flush()
-                # Final empty chunk
-                self.wfile.write(b"0\r\n\r\n")
-                self.wfile.flush()
+                else:
+                    # Non-streaming: read full response and return as-is
+                    data = resp.read()
+                    self.send_response(200)
+                    self.send_header("Content-Type", content_type)
+                    self.send_header("Content-Length", str(len(data)))
+                    for k, v in CORS_HEADERS.items():
+                        self.send_header(k, v)
+                    self.end_headers()
+                    self.wfile.write(data)
 
         except urllib.error.HTTPError as e:
             err = e.read()
