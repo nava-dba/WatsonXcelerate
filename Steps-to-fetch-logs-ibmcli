@@ -1,0 +1,108 @@
+# 1. Login
+ibmcloud login --apikey <API_KEY> --no-region
+
+    API endpoint: https://cloud.ibm.com
+    Region: us-south
+    Authenticating...
+    Retrieving API key token...
+    OK
+
+    Targeted account pvsauto pvsauto's Account (ef292c8841264453a3c43664760ffbeb) <-> 3133993
+
+
+    API endpoint:     https://cloud.ibm.com
+    Region:
+    User:             Naved.Afroz1@ibm.com
+    Account:          pvsauto pvsauto's Account (ef292c8841264453a3c43664760ffbeb) <-> 3133993
+    Resource group:   No resource group targeted, use 'ibmcloud target -g RESOURCE_GROUP'
+    nava@navas-MacBook-Pro Documents %
+
+# 2. Target region
+ibmcloud target -r us-south
+
+    Switched to region us-south
+
+
+
+    API endpoint:     https://cloud.ibm.com
+    Region:           us-south
+    User:             Naved.Afroz1@ibm.com
+    Account:          pvsauto pvsauto's Account (ef292c8841264453a3c43664760ffbeb) <-> 3133993
+    Resource group:   No resource group targeted, use 'ibmcloud target -g RESOURCE_GROUP'
+    nava@navas-MacBook-Pro Documents %
+
+# 3. Fetch schematics workspace list
+ibmcloud schematics workspace list
+
+    nava@navas-MacBook-Pro .ssh % ibmcloud schematics workspace list
+    
+    Plug-in 'schematics 1.12.32' is now available (you have 1.12.30).
+    Use 'ibmcloud plugin update schematics' to upgrade the plug-in.
+    Use 'ibmcloud config --check-version=false' to disable update check.
+    
+    Retrieving workspaces...
+    OK
+    Name                                              ID                                                     Description                                   Version   Status     Frozen
+    Oracle-on-IBM-Power-Virtual-Server-e58f           us-south.workspace.projects-service.f5769427           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    Oracle-on-IBM-Power-Virtual-Server-ac45           us-south.workspace.projects-service.f0457537           A configuration of the 4f5d1cc7-302c-479...             INACTIVE   False
+    asmcheck-validation                               us-south.workspace.projects-service.f03400a1           A configuration of the 4f5d1cc7-302c-479...             INACTIVE   False
+    Oracle-on-IBM-Power-Virtual-Server-ASM-5APR       us-south.workspace.projects-service.eb01f320           A configuration of the 4f5d1cc7-302c-479...             ACTIVE     False
+    vpc-si                                            us-south.workspace.projects-service.e2397cfa           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    Oracle-on-IBM-Power-Virtual-Server-f97d           us-south.workspace.projects-service.d8585e57           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    Oracle-on-IBM-Power-Virtual-Server-privt2         us-south.workspace.projects-service.d0f138ee           A configuration of the 4f5d1cc7-302c-479...             ACTIVE     False
+    1-MAY-26-JFS                                      us-south.workspace.projects-service.cf741316           A configuration of the f0b4a8b5-8720-413...             FAILED     False
+    Oracle-on-IBM-Power-Virtual-Server-Prac-af07      us-south.workspace.projects-service.c9a940b6           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    Oracle-on-IBM-Power-Virtual-Server-4d64           us-south.workspace.projects-service.c46a92e4           A configuration of the 4f5d1cc7-302c-479...             ACTIVE     False
+    Oracle-on-IBM-Power-Virtual-Server-e9fb           us-south.workspace.projects-service.beb0f882           A configuration of the 4f5d1cc7-302c-479...             INACTIVE   False
+    Oracle-on-IBM-Power-Virtual-Server-priv-jfs2si    us-south.workspace.projects-service.bb7bc5fb           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    ORACLE-PRIV-ASM-CD                                us-south.workspace.projects-service.b98f7c09           A configuration of the c1db8f3f-1584-494...             INACTIVE   False
+    vpc-si                                            us-south.workspace.projects-service.b63d91b6           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    Oracle-on-IBM-Power-Virtual-Server-privJ-17a4     us-south.workspace.projects-service.b0475794           A configuration of the 4f5d1cc7-302c-479...             ACTIVE     False
+    ORACLE-PRIV-JFS-CD                                us-south.workspace.projects-service.af4f04c6           A configuration of the c1db8f3f-1584-494...             INACTIVE   False
+    Oracle-on-IBM-Power-Virtual-Server-prvpvs         us-south.workspace.projects-service.a03f56a6           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    Oracle-on-IBM-Power-Virtual-Server-bhar1          us-south.workspace.projects-service.978eea13           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    Oracle-on-IBM-Power-Virtual-Server-733-rac        us-south.workspace.projects-service.7162b4c8           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    siasm-1-gui                                       us-south.workspace.projects-service.6c877b07           A configuration of the 2905fecd-d007-44e...             FAILED     False
+    ORACLE-PUB-ASM-CD                                 us-south.workspace.projects-service.6b372401           A configuration of the f73696ee-e728-4af...             FAILED     False
+    ORACLE-PRIV-RAC-CD                                us-south.workspace.projects-service.676c835c           A configuration of the 9e241f6f-6d50-486...             INACTIVE   False
+    sijfs2                                            us-south.workspace.projects-service.5cce4d53           A configuration of the 4f5d1cc7-302c-479...             ACTIVE     False
+    Oracle-on-IBM-Power-Virtual-Server-racprv         us-south.workspace.projects-service.566671d5           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    Oracle-on-IBM-Power-Virtual-Server-20d2           us-south.workspace.projects-service.4d21c7bc           A configuration of the 4f5d1cc7-302c-479...             ACTIVE     False
+    ORACLE-PUB-RAC-CD                                 us-south.workspace.projects-service.3f7962f5           A configuration of the 68f30c7b-2688-4aa...             INACTIVE   False
+    ORACLE-PRIV-RAC-CD                                us-south.workspace.projects-service.358fda43           A configuration of the 9e241f6f-6d50-486...             FAILED     False
+    ORACLE-PUB-JFS-CD                                 us-south.workspace.projects-service.34a817e3           A configuration of the f73696ee-e728-4af...             INACTIVE   False
+    Power-Virtual-Server-with-VPC-landing-zone-test   us-south.workspace.projects-service.2be8e64e           A configuration of the 4f5d1cc7-302c-479...             INACTIVE   False
+    1-MAY-26-SI-ASM                                   us-south.workspace.projects-service.2685783e           A configuration of the 2905fecd-d007-44e...             ACTIVE     False
+    Oracle-on-IBM-Power-Virtual-Server-9c5e           us-south.workspace.projects-service.1ca9f82b           A configuration of the 24dc07c9-578e-4ee...             INACTIVE   False
+    1-MAY-26-RAC                                      us-south.workspace.projects-service.13760041           A configuration of the 689320b4-ee56-42b...             ACTIVE     False
+    Oracle-on-IBM-Power-Virtual-Server-17d0           us-south.workspace.projects-service.0807479e           A configuration of the 10782a68-577f-47a...             INACTIVE   False
+    Oracle-on-IBM-Power-Virtual-Server-9e92           us-south.workspace.projects-service.027f4457           A configuration of the 4f5d1cc7-302c-479...             FAILED     False
+    deploy-arch-ibm-powervs-oracle-03-13-2026         us-south.workspace.globalcatalog-collection.f935b44f                                                           ACTIVE     False
+    deploy-arch-ibm-powervs-oracle-03-13-2026         us-south.workspace.globalcatalog-collection.878c87f2                                                           FAILED     False
+    deploy-arch-ibm-powervs-oracleJFS2-05-07-2026     us-south.workspace.globalcatalog-collection.861163fc                                                           ACTIVE     False
+    deploy-arch-ibm-powervs-oracle-03-13-2026         us-south.workspace.globalcatalog-collection.82936050                                                           ACTIVE     False
+    deploy-arch-ibm-powervs-oracle-03-13-2026         us-south.workspace.globalcatalog-collection.770b1492                                                           ACTIVE     False
+    deploy-arch-ibm-powervs-oracle-03-13-2026         us-south.workspace.globalcatalog-collection.3adb101e                                                           FAILED     False
+    deploy-arch-ibm-powervs-oracleRAC-05-07-2026      us-south.workspace.globalcatalog-collection.172219cd                                                           ACTIVE     False
+    
+    Showing 1-41 of 41 items
+
+ibmcloud schematics workspace list  | grep -A5 "ORACLE-PUB-RAC"
+    ORACLE-PUB-RAC-CD                                 us-south.workspace.projects-service.3f7962f5           A configuration of the 68f30c7b-2688-4aa...             INACTIVE   False
+    ORACLE-PRIV-RAC-CD                                us-south.workspace.projects-service.358fda43           A configuration of the 9e241f6f-6d50-486...             FAILED     False
+    ORACLE-PUB-JFS-CD                                 us-south.workspace.projects-service.34a817e3           A configuration of the f73696ee-e728-4af...             INACTIVE   False
+    Power-Virtual-Server-with-VPC-landing-zone-test   us-south.workspace.projects-service.2be8e64e           A configuration of the 4f5d1cc7-302c-479...             INACTIVE   False
+    1-MAY-26-SI-ASM                                   us-south.workspace.projects-service.2685783e           A configuration of the 2905fecd-d007-44e...             ACTIVE     False
+    Oracle-on-IBM-Power-Virtual-Server-9c5e           us-south.workspace.projects-service.1ca9f82b           A configuration of the 24dc07c9-578e-4ee...             INACTIVE   False
+    nava@navas-MacBook-Pro Documents %
+
+# 3. Get latest logs from ORACLE-PUB-RAC-CD workspace
+ibmcloud schematics logs --id us-south.workspace.projects-service.3f7962f5
+ibmcloud schematics logs --id us-south.workspace.projects-service.3f7962f5 > oracle-pub-rac-cd.log
+
+
+# 4. Get latest logs from ORACLE-PUB-RAC-CD workspace
+ibmcloud schematics logs --id us-south.workspace.projects-service.3f7962f5 --act-id 99203fff5964a67fa69d9915eec45462 > oracle-pub-rac-cd-plan-20260429.log
+
+
+

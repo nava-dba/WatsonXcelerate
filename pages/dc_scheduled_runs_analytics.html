@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="IBM Intelligent Log Analyzer - Error Analytics" />
+    <meta name="author" content="" />
+    <title>IBM Intelligent Log Analyzer - Error Analytics</title>
+
+    <!-- Carbon -->
+    <link rel="stylesheet" href="https://unpkg.com/carbon-components@10.58.0/css/carbon-components.min.css">
+
+    <!-- IBM Plex -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+    <!-- Navigation -->
+    <link rel="stylesheet" href="../assets/css/navigation.css?v=3.4.0">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+    <!-- Font Awesome -->
+    <script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js?v=3.4.0"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'IBM Plex Sans', Arial, sans-serif;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header-content h1 {
+            font-size: 2rem;
+            font-weight: 400;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-header-content h1 svg {
+            color: #0f62fe;
+            width: 32px;
+            height: 32px;
+        }
+
+        .page-header-content p {
+            font-size: 0.875rem;
+            margin: 0;
+            color: #525252;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background-color: #f4f4f4;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 2rem;
+        }
+
+        .filters-header {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .filters-header:hover {
+            background-color: #e8e8e8;
+        }
+
+        .filters-title {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filters-chevron {
+            transition: transform 0.2s;
+            font-size: 1.25rem;
+        }
+
+        .filters-chevron.expanded {
+            transform: rotate(90deg);
+        }
+
+        .filters-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .filters-content.expanded {
+            max-height: 500px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .filters-grid {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #161616;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.5rem;
+            border: 1px solid #8d8d8d;
+            background-color: #ffffff;
+            font-size: 0.875rem;
+            font-family: 'IBM Plex Sans', Arial, sans-serif;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: 2px solid #0f62fe;
+            outline-offset: -2px;
+        }
+
+        .filters-actions {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.11s;
+        }
+
+        .btn-primary {
+            background-color: #0f62fe;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0353e9;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #0f62fe;
+            border: 1px solid #0f62fe;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e8e8e8;
+        }
+
+        /* Statistics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            padding: 1.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #525252;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #161616;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .chart-header p {
+            font-size: 0.875rem;
+            color: #525252;
+            margin: 0;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 3% auto;
+            padding: 0;
+            border: 1px solid #e0e0e0;
+            width: 95%;
+            max-width: 1900px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease, width 0.3s ease, max-width 0.3s ease;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #525252;
+            padding: 0;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #161616;
+            background-color: #e0e0e0;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: rgb(22, 22, 22) !important;
+                color: #ffffff !important;
+            }
+
+            .bx--content {
+                background-color: rgb(22, 22, 22) !important;
+            }
+
+            .page-header-content h1 {
+                color: #ffffff !important;
+            }
+
+            .page-header-content p {
+                color: #c6c6c6 !important;
+            }
+
+            .filters-section {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .filters-header:hover {
+                background-color: #333333 !important;
+            }
+
+            .filters-content.expanded {
+                border-top-color: #404040 !important;
+            }
+
+            .filter-group label {
+                color: #ffffff !important;
+            }
+
+            .filter-group select,
+            .filter-group input {
+                background-color: #393939 !important;
+                color: #ffffff !important;
+                border-color: #525252 !important;
+            }
+
+            .btn-secondary {
+                color: #8ab4f8 !important;
+                border-color: #8ab4f8 !important;
+            }
+
+            .btn-secondary:hover {
+                background-color: #333333 !important;
+            }
+
+            .stat-card {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .stat-label {
+                color: #c6c6c6 !important;
+            }
+
+            .stat-value {
+                color: #ffffff !important;
+            }
+
+            .chart-container {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .chart-header h2 {
+                color: #ffffff !important;
+            }
+
+            .chart-header p {
+                color: #c6c6c6 !important;
+            }
+
+            .modal-content {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .modal-header {
+                border-bottom-color: #404040 !important;
+            }
+
+            .modal-header h2 {
+                color: #ffffff !important;
+            }
+
+            .modal-close {
+                color: #c6c6c6 !important;
+            }
+
+            .modal-close:hover {
+                color: #ffffff !important;
+                background-color: #393939 !important;
+            }
+
+            .dc-table thead {
+                background-color: #393939 !important;
+            }
+
+            .dc-table th {
+                color: #ffffff !important;
+                background-color: #393939 !important;
+            }
+
+            .dc-table tbody tr {
+                background-color: #262626 !important;
+            }
+
+            .dc-table td {
+                color: #ffffff !important;
+            }
+        }
+    </style>
+
+    <!-- WatsonX Chatbot -->
+    <link rel="stylesheet" href="../assets/css/chatbot.css">
+</head>
+
+<body>
+
+    <!-- Carbon UI Shell Header -->
+    <header class="bx--header" role="banner" aria-label="IBM Intelligent Log Analyzer">
+        <button class="bx--header__action bx--header__menu-trigger bx--header__menu-toggle bx--side-nav__toggle"
+            aria-label="Open menu" title="Open menu" type="button">
+            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" aria-label="Open menu" width="20" height="20" viewBox="0 0 20 20" role="img">
+                <path d="M2 14.8H18V16H2zM2 11.2H18V12.399999999999999H2zM2 7.6H18V8.799999999999999H2zM2 4H18V5.2H2z">
+                </path>
+            </svg>
+        </button>
+        <span class="bx--header__name">IBM Intelligent Log Analyzer</span>
+    </header>
+
+    <!-- Carbon Side Navigation -->
+    <nav data-side-nav class="bx--side-nav bx--side-nav--ux bx--side-nav--expanded" aria-label="Side navigation">
+        <nav class="bx--side-nav__navigation">
+            <ul class="bx--side-nav__items">
+                <li class="bx--side-nav__item">
+                    <a class="bx--side-nav__link" href="index.html">
+                        <div class="bx--side-nav__icon">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+                                viewBox="0 0 32 32" aria-hidden="true">
+                                <path
+                                    d="M16.6123,2.2138a1.01,1.01,0,0,0-1.2427,0L1,13.4194l1.2427,1.5717L4,13.6209V26a2.0041,2.0041,0,0,0,2,2H26a2.0037,2.0037,0,0,0,2-2V13.63L29.7573,15,31,13.4282ZM18,26H14V18h4Zm2,0V18a2.0023,2.0023,0,0,0-2-2H14a2.002,2.002,0,0,0-2,2v8H6V12.0615l10-7.79,10,7.8005V26Z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span class="bx--side-nav__link-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="bx--side-nav__item">
+                    <a class="bx--side-nav__link" href="dc_scheduled_runs.html">
+                        <div class="bx--side-nav__icon">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+                                viewBox="0 0 32 32" aria-hidden="true">
+                                <path
+                                    d="M28.7071,19.293,26,16.5859V13a2.0023,2.0023,0,0,0-2-2H22V9a2.0023,2.0023,0,0,0-2-2H18V4h2V2H12V4h2V7H12a2.0023,2.0023,0,0,0-2,2v2H8a2.0023,2.0023,0,0,0-2,2v9H4v2H6v4H8V24h2v4h2V24h2v4h2V24h2v4h2V24h2v4h2V24h2V22H24V13h2v3a.9991.9991,0,0,0,.293.707l3,3,1.414-1.414ZM12,9h8v2H12Zm0,4h8v9H12Z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span class="bx--side-nav__link-text">Stability</span>
+                    </a>
+                </li>
+                <li class="bx--side-nav__item">
+                    <a class="bx--side-nav__link bx--side-nav__link--current" href="dc_scheduled_runs_analytics.html" aria-current="page">
+                        <div class="bx--side-nav__icon">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+                                viewBox="0 0 32 32" aria-hidden="true">
+                                <path d="M26 24v-2H6V6H4v18a2 2 0 002 2h20zM8 20l5-5 4 4 5-6 3 3V10l-3 3-5 6-4-4-5 5z"/>
+                            </svg>
+                        </div>
+                        <span class="bx--side-nav__link-text">Analytics</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="bx--content">
+        <div style="padding: 0 2rem;">
+            <div class="page-header">
+                <div class="page-header-content">
+                    <h1>
+                        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                            <path
+                                d="M27,3H5A2,2,0,0,0,3,5V27a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V5A2,2,0,0,0,27,3ZM5,5H15V27H5ZM27,27H17V5H27Z">
+                            </path>
+                            <rect x="19" y="10" width="6" height="2"></rect>
+                            <rect x="19" y="15" width="6" height="2"></rect>
+                            <rect x="19" y="20" width="6" height="2"></rect>
+                            <rect x="7" y="10" width="6" height="2"></rect>
+                        </svg>
+                        Error Analytics
+                    </h1>
+                    <p>Analyze error patterns and trends across scheduled runs</p>
+                </div>
+                <a href="dc_scheduled_runs.html" class="bx--btn bx--btn--secondary"
+                    style="white-space: nowrap; text-decoration: none;">
+                    <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" style="margin-right: 0.5rem;">
+                        <path d="M14 26L15.41 24.59 7.83 17 28 17 28 15 7.83 15 15.41 7.41 14 6 4 16 14 26z"></path>
+                    </svg>
+                    Back to Table
+                </a>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filters-header" id="filters-toggle">
+                    <div class="filters-title">
+                        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor" width="20" height="20" viewBox="0 0 32 32" aria-hidden="true">
+                            <path
+                                d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26a2,2,0,0,1-.58,1.41l-1,1ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z">
+                            </path>
+                        </svg>
+                        Filters
+                    </div>
+                    <span class="filters-chevron">&#8250;</span>
+                </div>
+                <div class="filters-content" id="filters-content">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="filter-date-from">Date From</label>
+                            <input type="date" id="filter-date-from">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-date-to">Date To</label>
+                            <input type="date" id="filter-date-to">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-zone">Workspace</label>
+                            <select id="filter-zone">
+                                <option value="">All Workspaces</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-image">Version</label>
+                            <select id="filter-image">
+                                <option value="">All Versions</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-variation">Variation</label>
+                            <select id="filter-variation">
+                                <option value="">All Variations</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filters-actions">
+                        <button class="btn-primary" id="apply-filters">Apply Filters</button>
+                        <button class="btn-secondary" id="reset-filters">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Errors</div>
+                    <div class="stat-value" id="total-errors">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Unique Categories</div>
+                    <div class="stat-value" id="unique-categories">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Date Range</div>
+                    <div class="stat-value" id="date-range" style="font-size: 1.25rem;">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Most Common Error</div>
+                    <div class="stat-value" id="most-common" style="font-size: 1.25rem;">-</div>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h2>Error Distribution by Category</h2>
+                    <p>Click on a bar to view detailed error information</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="errorChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Error Details Modal -->
+    <div id="errorDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Error Details</h2>
+                <button class="modal-close" id="closeModal" aria-label="Close modal">
+                    <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor" width="20" height="20" viewBox="0 0 32 32" aria-hidden="true">
+                        <path
+                            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="errorDetailsContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Carbon Components JavaScript -->
+    <script src="https://unpkg.com/carbon-components@10.58.0/scripts/carbon-components.min.js"></script>
+    <script src="../assets/js/dc_scheduled_runs_analytics.js"></script>
+    <script src="../assets/js/nav_toggle.js?v=3.4.0"></script>
+    <script>
+        // Initialize Carbon components
+        var sideNavElement = document.querySelector('[data-side-nav]');
+        var sideNav = CarbonComponents.SideNav.create(sideNavElement);
+
+        // Handle toggle button
+        var toggleButton = document.querySelector('.bx--side-nav__toggle');
+        if (toggleButton && sideNav) {
+            toggleButton.addEventListener('click', function () {
+                var isExpanded = sideNavElement.classList.contains('bx--side-nav--expanded');
+                if (isExpanded) {
+                    sideNavElement.classList.remove('bx--side-nav--expanded');
+                    sideNavElement.classList.add('bx--side-nav--rail');
+                } else {
+                    sideNavElement.classList.remove('bx--side-nav--rail');
+                    sideNavElement.classList.add('bx--side-nav--expanded');
+                }
+            });
+        }
+    </script>
+
+    <!-- WatsonX Chatbot -->
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
+</body>
+
+</html>

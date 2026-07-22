@@ -1,0 +1,400 @@
+[
+  {
+    "Date": "2026-04-10",
+    "workspacename": "Oracle-on-IBM-Power-Virtual-Server-e58f",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.13.7",
+    "Error": {
+      "errorCount": 1,
+      "categories": [
+        "SSH Connectivity"
+      ],
+      "details": [
+        {
+          "category": "SSH Connectivity",
+          "module": "null_resource.squid_start",
+          "description": "2026/04/10 17:15:51 Terraform apply | null_resource.squid_start (remote-exec):   Target Platform: unix\n2026/04/10 17:16:00 Terraform apply | null_resource.squid_start: Still creating... [4m50s elapsed]\n2026/04/10 17:16:10 Terraform apply |\n2026/04/10 17:16:10 Terraform apply | Error: remote-exec provisioner error\n2026/04/10 17:16:10 Terraform apply |\n2026/04/10 17:16:10 Terraform apply |   with null_resource.squid_start,\n2026/04/10 17:16:10 Terraform apply |   on main.tf line 120, in resource \"null_resource\" \"squid_start\":\n2026/04/10 17:16:10 Terraform apply |  120:   provisioner \"remote-exec\" {\n2026/04/10 17:16:10 Terraform apply |\n2026/04/10 17:16:10 Terraform apply | timeout - last error: dial tcp 52.118.211.51:22: i/o timeout\n2026/04/10 17:16:10 Terraform APPLY error: Terraform APPLY errorexit status 1\n2026/04/10 17:16:10 Starting command: terraform1.10 output -no-color -json\n2026/04/10 17:16:10 Starting command: terraform1.10 output -no-color -json\n2026/04/10 17:16:10 Command finished successfully.\n2026/04/10 17:16:10 -----  Schematics Cost Estimation  -----\n2026/04/10 17:16:10 Cost estimation with default usage\n2026/04/10 17:16:10 Starting command: infracost breakdown -p tfplan.json --format json --out-file cost.json --project-name Oracle on IBM Power Virtual Server\n2026/04/10 17:16:11 Schematics Cost Estimation | Detected Terraform plan JSON file at tfplan.json\n2026/04/10 17:16:11 Schematics Cost Estimation |\n\u280b Extracting only cost-related params from terraform"
+        }
+      ]
+    },
+    "_action_id": "2bf93f56f4d082d3e1b95c84303ff2e7"
+  },
+  {
+    "Date": "2026-06-11",
+    "workspacename": "vpc-si",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.17.2",
+    "Error": {
+      "errorCount": 0,
+      "categories": [],
+      "details": []
+    },
+    "_action_id": "db6d08df26d356bf668329b908bc724a"
+  },
+  {
+    "Date": "2026-02-27",
+    "workspacename": "Oracle-on-IBM-Power-Virtual-Server-f97d",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "1.1.0",
+    "Error": {
+      "errorCount": 2,
+      "categories": [
+        "Deprecated Action / Dependency",
+        "SSH Connectivity"
+      ],
+      "details": [
+        {
+          "category": "Deprecated Action / Dependency",
+          "module": "module.pi_instance_aix.module.pi_instance.data.ibm_pi_instance_ip.instance_primary_ip_ds",
+          "description": "2026/02/27 06:57:10 Terraform apply |\n2026/02/27 06:57:10 Terraform apply | (and 3 more similar warnings elsewhere)\n2026/02/27 06:57:10 Terraform apply |\n2026/02/27 06:57:10 Terraform apply | Error: remote-exec provisioner error\n2026/02/27 06:57:10 Terraform apply |\n2026/02/27 06:57:10 Terraform apply |   with module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0],\n2026/02/27 06:57:10 Terraform apply |   on ../../../modules/ansible/main.tf line 61, in resource \"terraform_data\" \"setup_ansible_host\":\n2026/02/27 06:57:10 Terraform apply |   61:   provisioner \"remote-exec\" {\n2026/02/27 06:57:10 Terraform apply |\n2026/02/27 06:57:10 Terraform apply | timeout - last error: ssh: rejected: connect failed (Connection timed out)\n2026/02/27 06:57:10 Terraform APPLY error: Terraform APPLY errorexit status 1\n2026/02/27 06:57:10 Starting command: terraform1.10 output -no-color -json\n2026/02/27 06:57:10 Starting command: terraform1.10 output -no-color -json\n2026/02/27 06:57:10 Command finished successfully.\n2026/02/27 06:57:10 -----  Schematics Cost Estimation  -----\n2026/02/27 06:57:10 Cost estimation with default usage\n2026/02/27 06:57:10 Starting command: infracost breakdown -p tfplan.json --format json --out-file cost.json --project-name Oracle on IBM Power Virtual Server\n2026/02/27 06:57:11 Schematics Cost Estimation | Detected Terraform plan JSON file at tfplan.json\n2026/02/27 06:57:11 Schematics Cost Estimation |\n\u280b Extracting only cost-related params from terraform"
+        },
+        {
+          "category": "SSH Connectivity",
+          "module": "module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0]",
+          "description": "2026/02/27 06:57:10 Terraform apply |\n2026/02/27 06:57:10 Terraform apply | (and 3 more similar warnings elsewhere)\n2026/02/27 06:57:10 Terraform apply |\n2026/02/27 06:57:10 Terraform apply | Error: remote-exec provisioner error\n2026/02/27 06:57:10 Terraform apply |\n2026/02/27 06:57:10 Terraform apply |   with module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0],\n2026/02/27 06:57:10 Terraform apply |   on ../../../modules/ansible/main.tf line 61, in resource \"terraform_data\" \"setup_ansible_host\":\n2026/02/27 06:57:10 Terraform apply |   61:   provisioner \"remote-exec\" {\n2026/02/27 06:57:10 Terraform apply |\n2026/02/27 06:57:10 Terraform apply | timeout - last error: ssh: rejected: connect failed (Connection timed out)\n2026/02/27 06:57:10 Terraform APPLY error: Terraform APPLY errorexit status 1\n2026/02/27 06:57:10 Starting command: terraform1.10 output -no-color -json\n2026/02/27 06:57:10 Starting command: terraform1.10 output -no-color -json\n2026/02/27 06:57:10 Command finished successfully.\n2026/02/27 06:57:10 -----  Schematics Cost Estimation  -----\n2026/02/27 06:57:10 Cost estimation with default usage\n2026/02/27 06:57:10 Starting command: infracost breakdown -p tfplan.json --format json --out-file cost.json --project-name Oracle on IBM Power Virtual Server\n2026/02/27 06:57:11 Schematics Cost Estimation | Detected Terraform plan JSON file at tfplan.json\n2026/02/27 06:57:11 Schematics Cost Estimation |\n\u280b Extracting only cost-related params from terraform"
+        }
+      ]
+    },
+    "_action_id": "0f7ed41700ed49d4193ad41c482e59fb"
+  },
+  {
+    "Date": "2026-05-02",
+    "workspacename": "1-MAY-26-JFS",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.16.1",
+    "Error": {
+      "errorCount": 1,
+      "categories": [
+        "SSH Connectivity"
+      ],
+      "details": [
+        {
+          "category": "SSH Connectivity",
+          "module": "null_resource.squid_start",
+          "description": "2026/05/02 05:40:02 Terraform apply | null_resource.squid_start (remote-exec):   Target Platform: unix\n2026/05/02 05:40:11 Terraform apply | null_resource.squid_start: Still creating... [4m50s elapsed]\n2026/05/02 05:40:21 Terraform apply |\n2026/05/02 05:40:21 Terraform apply | Error: remote-exec provisioner error\n2026/05/02 05:40:21 Terraform apply |\n2026/05/02 05:40:21 Terraform apply |   with null_resource.squid_start,\n2026/05/02 05:40:21 Terraform apply |   on main.tf line 120, in resource \"null_resource\" \"squid_start\":\n2026/05/02 05:40:21 Terraform apply |  120:   provisioner \"remote-exec\" {\n2026/05/02 05:40:21 Terraform apply |\n2026/05/02 05:40:21 Terraform apply | timeout - last error: dial tcp 52.118.211.51:22: i/o timeout\n2026/05/02 05:40:21 Terraform APPLY error: Terraform APPLY errorexit status 1\n2026/05/02 05:40:21 Starting command: terraform1.10 output -no-color -json\n2026/05/02 05:40:21 Starting command: terraform1.10 output -no-color -json\n2026/05/02 05:40:22 Command finished successfully.\n2026/05/02 05:40:22 -----  Schematics Cost Estimation  -----\n2026/05/02 05:40:22 Cost estimation with default usage\n2026/05/02 05:40:22 Starting command: infracost breakdown -p tfplan.json --format json --out-file cost.json --project-name Oracle on IBM Power Virtual Server\n2026/05/02 05:40:22 Schematics Cost Estimation | Detected Terraform plan JSON file at tfplan.json\n2026/05/02 05:40:22 Schematics Cost Estimation |\n\u280b Extracting only cost-related params from terraform"
+        }
+      ]
+    },
+    "_action_id": "0d64288dd89e50561c8ec55a823e06e2"
+  },
+  {
+    "Date": "2026-05-05",
+    "workspacename": "Oracle-on-IBM-Power-Virtual-Server-Prac-af07",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "2.0.7",
+    "Error": {
+      "errorCount": 3,
+      "categories": [
+        "Ansible",
+        "Remote Exec"
+      ],
+      "details": [
+        {
+          "category": "Remote Exec",
+          "module": "module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0]",
+          "description": "2026/05/05 16:14:33 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):   Checking Host Key: false\n2026/05/05 16:14:33 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Connected!\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Proxy configured in /etc/bashrc: http://10.169.2.9:3128\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): /root/terraform_files/ansible_node_packages.sh: line 40: dmidecode: command not found\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Virtual server instance ID:\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - System Time (UTC): 2026-05-05T16:17:20Z\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Updating /etc/hosts file\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Created backup: /etc/hosts.backup\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - /etc/hosts updated successfully\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Added entries:\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO -   10.20.40.11 priv-aix-1\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO -   10.20.40.110 priv-aix-2\n2026/05/05 16:14:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): File '/usr/share/powervs-fls/powervs-fls-readme.md' exists and has a size greater than zero.\n2026/05/05 16:14:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): +-------------------------------------------+\n2026/05/05 16:14:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):    System Status Details\n2026/05/05 16:14:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): +-------------------------------------------+\n2026/05/05 16:14:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Overall Status: Unknown\n2026/05/05 16:14:35 Terraform apply |\n2026/05/05 16:14:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): System Purpose Status: Unknown\n2026/05/05 16:14:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Script is running in background and may take a few minutes. Please do not kill any background process while this runs"
+        },
+        {
+          "category": "Remote Exec",
+          "module": "module.oracle_install.terraform_data.execute_playbooks[0]",
+          "description": "2026/05/05 17:03:19 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m31s elapsed]\n2026/05/05 17:03:29 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m41s elapsed]\n2026/05/05 17:03:39 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m51s elapsed]\n... (17 more 'Still creating...' lines omitted)"
+        },
+        {
+          "category": "Ansible",
+          "module": "module.oracle_install.terraform_data.execute_playbooks[0]",
+          "description": "2026/05/05 18:29:49 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [2h6m1s elapsed]\n2026/05/05 18:29:59 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [2h6m11s elapsed]\n2026/05/05 18:30:09 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [2h6m21s elapsed]\n2026/05/05 18:30:14 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): fatal: [priv-aix-1]: FAILED! => {\"changed\": true, \"cmd\": \"/u01/app/19c/grid/gridSetup.sh -silent -executeConfigTools -responseFile /tmp/ansible/files/grid_rsp_1918_plus.rsp >> /tmp/ansible/done/runconfigtools.out 2>&1\", \"delta\": \"0:54:08.803540\", \"end\": \"2026-05-05 11:33:00.865794\", \"msg\": \"non-zero return code\", \"rc\": 255, \"start\": \"2026-05-05 10:38:52.062254\", \"stderr\": \"\", \"stderr_lines\": [], \"stdout\": \"\", \"stdout_lines\": []}\n2026/05/05 18:30:14 Terraform apply |\n2026/05/05 18:30:14 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): NO MORE HOSTS LEFT *************************************************************\n2026/05/05 18:30:14 Terraform apply |\n2026/05/05 18:30:14 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): PLAY RECAP *********************************************************************\n2026/05/05 18:30:14 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): priv-aix-1                 : ok=168  changed=104  unreachable=0    failed=1    skipped=93   rescued=0    ignored=1\n2026/05/05 18:30:14 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): priv-aix-2                 : ok=147  changed=86   unreachable=0    failed=0    skipped=114  rescued=0    ignored=1\n2026/05/05 18:30:14 Terraform apply |\n2026/05/05 18:30:14 Terraform apply |\n2026/05/05 18:30:14 Terraform apply | Error: remote-exec provisioner error\n2026/05/05 18:30:14 Terraform apply |\n2026/05/05 18:30:14 Terraform apply |   with module.oracle_install.terraform_data.execute_playbooks[0],\n2026/05/05 18:30:14 Terraform apply |   on ../../../modules/ansible/main.tf line 156, in resource \"terraform_data\" \"execute_playbooks\":\n2026/05/05 18:30:14 Terraform apply |  156:   provisioner \"remote-exec\" {\n2026/05/05 18:30:14 Terraform apply |\n2026/05/05 18:30:14 Terraform apply | error executing \"/tmp/terraform_2075064117.sh\": Process exited with status 2\n2026/05/05 18:30:14 Terraform APPLY error: Terraform APPLY errorexit status 1"
+        }
+      ]
+    },
+    "_action_id": "b55a2d67d8c1167498d4a3f5178131d2"
+  },
+  {
+    "Date": "2026-04-20",
+    "workspacename": "Oracle-on-IBM-Power-Virtual-Server-priv-jfs2si",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.15.2",
+    "Error": {
+      "errorCount": 0,
+      "categories": [],
+      "details": []
+    },
+    "_action_id": "63bdcf6b9c2d82b9f3ad88fc3527fe86"
+  },
+  {
+    "Date": "2026-06-11",
+    "workspacename": "vpc-si",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.17.2",
+    "Error": {
+      "errorCount": 1,
+      "categories": [
+        "Provider Inconsistency"
+      ],
+      "details": [
+        {
+          "category": "Provider Inconsistency",
+          "module": "pi_instance_aix",
+          "description": "2026/06/11 10:12:44 Terraform init | If you'd like to know more about provider signing, you can read about it here:\n2026/06/11 10:12:44 Terraform init | https://www.terraform.io/docs/cli/plugins/signing.html\n2026/06/11 10:12:44 Terraform init |\n2026/06/11 10:12:44 Terraform init | Error: Failed to query available provider packages\n2026/06/11 10:12:44 Terraform init |\n2026/06/11 10:12:44 Terraform init | Could not retrieve the list of available versions for provider\n2026/06/11 10:12:44 Terraform init | hashicorp/random: no available releases match the given constraints >= 3.4.3,\n2026/06/11 10:12:44 Terraform init | >= 3.5.1, >= 3.6.1, 3.6.1, >= 3.7.2, < 4.0.0\n2026/06/11 10:12:44 If the provided Terraform contains a module statement, verify that the referenced resources exist, and that any credentials used to access those resources are configured correctly and are still valid.\n2026/06/11 10:12:44 If the referenced resources are stored in a source code hosting repository that requires credentials, verify that a personal access token has been specified, as downloads are not supported using a project access token.\n2026/06/11 10:12:44 Terraform INIT error: Terraform INIT errorexit status 1\n2026/06/11 10:12:44 Could not execute job: Error : Terraform INIT errorexit status 1"
+        }
+      ]
+    },
+    "_action_id": "e71848c34f8743e308c028470635f5c5"
+  },
+  {
+    "Date": "2026-04-26",
+    "workspacename": "Oracle-on-IBM-Power-Virtual-Server-prvpvs",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "1.4.0",
+    "Error": {
+      "errorCount": 3,
+      "categories": [
+        "Ansible",
+        "Remote Exec"
+      ],
+      "details": [
+        {
+          "category": "Remote Exec",
+          "module": "module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0]",
+          "description": "2026/04/26 17:34:55 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):   Checking Host Key: false\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Connected!\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Proxy configured in /etc/bashrc: http://10.169.2.9:3128\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): /root/terraform_files/ansible_node_packages.sh: line 40: dmidecode: command not found\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Virtual server instance ID:\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - System Time (UTC): 2026-04-26T17:37:42Z\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Updating /etc/hosts file\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Created backup: /etc/hosts.backup\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - /etc/hosts updated successfully\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Added entries:\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO -   10.20.40.67 priv-aix-1\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO -   10.20.40.121 priv-aix-2\n2026/04/26 17:34:56 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): File '/usr/share/powervs-fls/powervs-fls-readme.md' exists and has a size greater than zero.\n2026/04/26 17:34:59 Terraform apply | ibm_pi_volume.node_arch[0]: Still creating... [20s elapsed]\n2026/04/26 17:34:59 Terraform apply | ibm_pi_volume.shared[12]: Still creating... [20s elapsed]\n2026/04/26 17:34:59 Terraform apply | ibm_pi_volume.shared[6]: Still creating... [20s elapsed]\n... (4 more 'Still creating...' lines omitted)"
+        },
+        {
+          "category": "Remote Exec",
+          "module": "module.oracle_install.terraform_data.execute_playbooks[0]",
+          "description": "2026/04/26 18:27:15 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m30s elapsed]\n2026/04/26 18:27:25 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m40s elapsed]\n2026/04/26 18:27:35 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m50s elapsed]\n... (17 more 'Still creating...' lines omitted)"
+        },
+        {
+          "category": "Ansible",
+          "module": "module.oracle_install.terraform_data.execute_playbooks[0]",
+          "description": "2026/04/26 20:53:32 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): priv-aix-2                 : ok=164  changed=96   unreachable=0    failed=0    skipped=143  rescued=0    ignored=1\n2026/04/26 20:53:32 Terraform apply |\n2026/04/26 20:53:32 Terraform apply |\n2026/04/26 20:53:32 Terraform apply | Error: remote-exec provisioner error\n2026/04/26 20:53:32 Terraform apply |\n2026/04/26 20:53:32 Terraform apply |   with module.oracle_install.terraform_data.execute_playbooks[0],\n2026/04/26 20:53:32 Terraform apply |   on ../../../modules/ansible/main.tf line 156, in resource \"terraform_data\" \"execute_playbooks\":\n2026/04/26 20:53:32 Terraform apply |  156:   provisioner \"remote-exec\" {\n2026/04/26 20:53:32 Terraform apply |\n2026/04/26 20:53:32 Terraform apply | error executing \"/tmp/terraform_302915279.sh\": Process exited with status 2\n2026/04/26 20:53:32 Terraform APPLY error: Terraform APPLY errorexit status 1\n2026/04/26 20:53:32 Starting command: terraform1.10 output -no-color -json\n2026/04/26 20:53:32 Starting command: terraform1.10 output -no-color -json\n2026/04/26 20:53:33 Command finished successfully.\n2026/04/26 20:53:33 -----  Schematics Cost Estimation  -----\n2026/04/26 20:53:33 Cost estimation with default usage\n2026/04/26 20:53:33 Starting command: infracost breakdown -p tfplan.json --format json --out-file cost.json --project-name Oracle on IBM Power Virtual Server\n2026/04/26 20:53:33 Schematics Cost Estimation | Detected Terraform plan JSON file at tfplan.json\n2026/04/26 20:53:33 Schematics Cost Estimation |\n\u280b Extracting only cost-related params from terraform"
+        }
+      ]
+    },
+    "_action_id": "59c5f41b24bc59cc2aca1d0e49be334a"
+  },
+  {
+    "Date": "2026-03-18",
+    "workspacename": "Oracle-on-IBM-Power-Virtual-Server-bhar1",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "2.0.3",
+    "Error": {
+      "errorCount": 3,
+      "categories": [
+        "Package Install",
+        "Remote Exec"
+      ],
+      "details": [
+        {
+          "category": "Remote Exec",
+          "module": "module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0]",
+          "description": "2026/03/18 19:18:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):   SSH Agent: false\n2026/03/18 19:18:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):   Checking Host Key: false\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Connected!\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): /root/terraform_files/ansible_node_packages.sh: line 39: dmidecode: command not found\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Virtual server instance ID:\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - System Time (UTC): 2026-03-18T19:19:38Z\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - No host entries provided, skipping /etc/hosts update\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Sleeping 30 seconds for all subscription-manager process to finish.\n2026/03/18 19:18:37 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_volume_attach.instance_volumes_attach[16]: Still creating... [10s elapsed]\n2026/03/18 19:18:41 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_volume_attach.instance_volumes_attach[9]: Still creating... [20s elapsed]\n2026/03/18 19:18:41 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_volume_attach.instance_volumes_attach[2]: Still creating... [20s elapsed]\n... (9 more 'Still creating...' lines omitted)"
+        },
+        {
+          "category": "Package Install",
+          "module": "module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0]",
+          "description": "2026/03/18 19:18:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):   SSH Agent: false\n2026/03/18 19:18:34 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):   Checking Host Key: false\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Connected!\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): /root/terraform_files/ansible_node_packages.sh: line 39: dmidecode: command not found\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Virtual server instance ID:\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - System Time (UTC): 2026-03-18T19:19:38Z\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - No host entries provided, skipping /etc/hosts update\n2026/03/18 19:18:35 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Sleeping 30 seconds for all subscription-manager process to finish.\n2026/03/18 19:18:37 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_volume_attach.instance_volumes_attach[16]: Still creating... [10s elapsed]\n2026/03/18 19:18:41 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_volume_attach.instance_volumes_attach[9]: Still creating... [20s elapsed]\n2026/03/18 19:18:41 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_volume_attach.instance_volumes_attach[2]: Still creating... [20s elapsed]\n... (9 more 'Still creating...' lines omitted)"
+        },
+        {
+          "category": "Remote Exec",
+          "module": "module.ibmcloud_cos_patch.terraform_data.download_objects",
+          "description": "2026/03/18 19:24:41 Terraform apply | module.pi_instance_aix_init.terraform_data.execute_playbooks[0] (remote-exec): Connected!\n2026/03/18 19:24:41 Terraform apply | module.pi_instance_aix_init.terraform_data.execute_playbooks[0]: Creation complete after 1m15s [id=3293c2be-c194-ece1-325a-911a5ef72ba6]\n2026/03/18 19:24:41 Terraform apply |\n2026/03/18 19:24:41 Terraform apply | Error: remote-exec provisioner error\n2026/03/18 19:24:41 Terraform apply |\n2026/03/18 19:24:41 Terraform apply |   with module.ibmcloud_cos_patch.terraform_data.download_objects,\n2026/03/18 19:24:41 Terraform apply |   on ../../../modules/ibmcloud-cos/main.tf line 58, in resource \"terraform_data\" \"download_objects\":\n2026/03/18 19:24:41 Terraform apply |   58:   provisioner \"remote-exec\" {\n2026/03/18 19:24:41 Terraform apply |\n2026/03/18 19:24:41 Terraform apply | error executing \"/tmp/terraform_1938616522.sh\": Process exited with status 1\n2026/03/18 19:24:41 Terraform APPLY error: Terraform APPLY errorexit status 1\n2026/03/18 19:24:41 Starting command: terraform1.10 output -no-color -json\n2026/03/18 19:24:41 Starting command: terraform1.10 output -no-color -json\n2026/03/18 19:24:42 Command finished successfully.\n2026/03/18 19:24:42 -----  Schematics Cost Estimation  -----\n2026/03/18 19:24:42 Cost estimation with default usage\n2026/03/18 19:24:42 Starting command: infracost breakdown -p tfplan.json --format json --out-file cost.json --project-name Oracle on IBM Power Virtual Server\n2026/03/18 19:24:42 Schematics Cost Estimation | Detected Terraform plan JSON file at tfplan.json\n2026/03/18 19:24:42 Schematics Cost Estimation |\n\u280b Extracting only cost-related params from terraform"
+        }
+      ]
+    },
+    "_action_id": "bea93cb1f106e9cc5f379b8337d93e44"
+  },
+  {
+    "Date": "2026-04-10",
+    "workspacename": "Oracle-on-IBM-Power-Virtual-Server-733-rac",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.13.7",
+    "Error": {
+      "errorCount": 3,
+      "categories": [
+        "Deprecated Action / Dependency",
+        "Remote Exec"
+      ],
+      "details": [
+        {
+          "category": "Remote Exec",
+          "module": "module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0]",
+          "description": "2026/04/10 12:46:12 Terraform apply | ibm_pi_volume.node_oravg[1]: Creation complete after 54s [id=3dd85d97-1033-490e-98bb-f1445a889503/4f25bbf1-35e5-4976-8659-3aa082577442]\n2026/04/10 12:46:12 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Connected!\n2026/04/10 12:46:12 Terraform apply | ibm_pi_volume.node_arch[3]: Still creating... [50s elapsed]\n2026/04/10 12:46:13 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): /root/terraform_files/ansible_node_packages.sh: line 39: dmidecode: command not found\n2026/04/10 12:46:13 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Virtual server instance ID:\n2026/04/10 12:46:13 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - System Time (UTC): 2026-04-10T12:45:55Z\n2026/04/10 12:46:13 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Updating /etc/hosts file\n2026/04/10 12:46:13 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Created backup: /etc/hosts.backup\n2026/04/10 12:46:13 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - /etc/hosts updated successfully\n2026/04/10 12:46:13 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Added entries:\n2026/04/10 12:46:13 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO -   10.40.80.118 rac-aix-1\n2026/04/10 12:46:13 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO -   10.40.80.78 rac-aix-2\n2026/04/10 12:46:13 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Sleeping 30 seconds for all subscription-manager process to finish.\n2026/04/10 12:46:13 Terraform apply | ibm_pi_volume.node_arch[2]: Creation complete after 52s [id=3dd85d97-1033-490e-98bb-f1445a889503/9b9e09e5-fb17-438b-9fc1-7289e97b1029]\n2026/04/10 12:46:13 Terraform apply | ibm_pi_volume.node_arch[1]: Still creating... [50s elapsed]\n2026/04/10 12:46:13 Terraform apply | ibm_pi_volume.node_oravg[0]: Creation complete after 54s [id=3dd85d97-1033-490e-98bb-f1445a889503/1a590ab2-97ad-48d8-9b02-b9a5407060af]\n2026/04/10 12:46:14 Terraform apply | ibm_pi_volume.node_oravg[2]: Creation complete after 53s [id=3dd85d97-1033-490e-98bb-f1445a889503/ca821a47-526d-49ff-adc7-df33e0e39a09]\n2026/04/10 12:46:14 Terraform apply | ibm_pi_volume_attach.node_oravg_attach[2]: Creating...\n2026/04/10 12:46:14 Terraform apply | ibm_pi_volume_attach.node_oravg_attach[0]: Creating...\n2026/04/10 12:46:14 Terraform apply | ibm_pi_volume_attach.node_oravg_attach[3]: Creating..."
+        },
+        {
+          "category": "Remote Exec",
+          "module": "module.oracle_install.terraform_data.execute_playbooks[0]",
+          "description": "2026/04/10 13:33:49 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m30s elapsed]\n2026/04/10 13:33:59 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m40s elapsed]\n2026/04/10 13:34:09 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m50s elapsed]\n... (17 more 'Still creating...' lines omitted)"
+        },
+        {
+          "category": "Deprecated Action / Dependency",
+          "module": "data.ibm_pi_instance.attached_instances[0]",
+          "description": "2026/04/10 15:41:33 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): ok: [rac-aix-2]\n2026/04/10 15:41:33 Terraform apply |\n2026/04/10 15:41:33 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): TASK [Create archvg Volume Group on this node] *********************************\n2026/04/10 15:41:35 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): fatal: [rac-aix-1]: FAILED! => {\"changed\": false, \"cmd\": \"mkvg -f -M n -S -s 512  -y archvg hdisk4 hdisk5\", \"msg\": \"Failed to create volume group archvg. Command mkvg -f -M n -S -s 512  -y archvg hdisk4 hdisk5 failed.\", \"rc\": 1, \"stderr\": \"0516-306 mkvg: Unable to find physical volume hdisk4 in the Device\\n\\tConfiguration Database.\\n0516-306 mkvg: Unable to find physical volume hdisk5 in the Device\\n\\tConfiguration Database.\\n0516-862 mkvg: Unable to create volume group.\\n\", \"stderr_lines\": [\"0516-306 mkvg: Unable to find physical volume hdisk4 in the Device\", \"\\tConfiguration Database.\", \"0516-306 mkvg: Unable to find physical volume hdisk5 in the Device\", \"\\tConfiguration Database.\", \"0516-862 mkvg: Unable to create volume group.\"], \"stdout\": \"\", \"stdout_lines\": []}\n2026/04/10 15:41:35 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): fatal: [rac-aix-2]: FAILED! => {\"changed\": false, \"cmd\": \"mkvg -f -M n -S -s 512  -y archvg hdisk4 hdisk5\", \"msg\": \"Failed to create volume group archvg. Command mkvg -f -M n -S -s 512  -y archvg hdisk4 hdisk5 failed.\", \"rc\": 1, \"stderr\": \"0516-306 mkvg: Unable to find physical volume hdisk4 in the Device\\n\\tConfiguration Database.\\n0516-306 mkvg: Unable to find physical volume hdisk5 in the Device\\n\\tConfiguration Database.\\n0516-862 mkvg: Unable to create volume group.\\n\", \"stderr_lines\": [\"0516-306 mkvg: Unable to find physical volume hdisk4 in the Device\", \"\\tConfiguration Database.\", \"0516-306 mkvg: Unable to find physical volume hdisk5 in the Device\", \"\\tConfiguration Database.\", \"0516-862 mkvg: Unable to create volume group.\"], \"stdout\": \"\", \"stdout_lines\": []}\n2026/04/10 15:41:35 Terraform apply |\n2026/04/10 15:41:35 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): PLAY RECAP *********************************************************************\n2026/04/10 15:41:35 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): rac-aix-1                  : ok=190  changed=118  unreachable=0    failed=1    skipped=105  rescued=0    ignored=1\n2026/04/10 15:41:35 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0] (remote-exec): rac-aix-2                  : ok=154  changed=88   unreachable=0    failed=1    skipped=140  rescued=0    ignored=1\n2026/04/10 15:41:35 Terraform apply |\n2026/04/10 15:41:35 Terraform apply |\n2026/04/10 15:41:35 Terraform apply | Warning: Argument is deprecated\n2026/04/10 15:41:35 Terraform apply |\n2026/04/10 15:41:35 Terraform apply |   with data.ibm_pi_instance.attached_instances[0],\n2026/04/10 15:41:35 Terraform apply |   on main.tf line 210, in data \"ibm_pi_instance\" \"attached_instances\":\n2026/04/10 15:41:35 Terraform apply |  210:   pi_instance_name     = \"${var.prefix}-aix-${count.index + 1}\"\n2026/04/10 15:41:35 Terraform apply |\n2026/04/10 15:41:35 Terraform apply | The pi_instance_name field is deprecated. Please use pi_instance_id instead\n2026/04/10 15:41:35 Terraform apply |\n2026/04/10 15:41:35 Terraform apply | (and one more similar warning elsewhere)"
+        }
+      ]
+    },
+    "_action_id": "8fff18f30384398d857829a5f25743e2"
+  },
+  {
+    "Date": "2026-06-25",
+    "workspacename": "siasm-1-gui",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.18.3",
+    "Error": {
+      "errorCount": 1,
+      "categories": [
+        "IBM Cloud API"
+      ],
+      "details": [
+        {
+          "category": "IBM Cloud API",
+          "module": "pi_instance_aix",
+          "description": "2026/06/25 16:25:44 Terraform init | - Installing hashicorp/random v3.9.0...\n2026/06/25 16:25:44 Terraform init | - Installed hashicorp/random v3.9.0 (signed by HashiCorp)\n2026/06/25 16:25:44 Terraform init |\n2026/06/25 16:25:44 Terraform init | Error: Failed to install provider\n2026/06/25 16:25:44 Terraform init |\n2026/06/25 16:25:44 Terraform init | Error while installing ibm-cloud/ibm v2.2.1: could not query provider\n2026/06/25 16:25:44 Terraform init | registry for registry.terraform.io/ibm-cloud/ibm: the request failed after 2\n2026/06/25 16:25:44 Terraform init | attempts, please try again later: Get\n2026/06/25 16:25:44 Terraform init | \"https://registry.terraform.io/v1/providers/ibm-cloud/ibm/2.2.1/download/linux/amd64\":\n2026/06/25 16:25:44 Terraform init | net/http: request canceled (Client.Timeout exceeded while awaiting headers)\n2026/06/25 16:25:44 If the provided Terraform contains a module statement, verify that the referenced resources exist, and that any credentials used to access those resources are configured correctly and are still valid.\n2026/06/25 16:25:44 If the referenced resources are stored in a source code hosting repository that requires credentials, verify that a personal access token has been specified, as downloads are not supported using a project access token.\n2026/06/25 16:25:44 Terraform INIT error: Terraform INIT errorexit status 1\n2026/06/25 16:25:44 Could not execute job: Error : Terraform INIT errorexit status 1"
+        }
+      ]
+    },
+    "_action_id": "04b191d7a5536464889144631aec0e0a"
+  },
+  {
+    "Date": "2026-06-26",
+    "workspacename": "ORACLE-PUB-ASM-CD",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.19.1",
+    "Error": {
+      "errorCount": 2,
+      "categories": [
+        "PowerVS Instance"
+      ],
+      "details": [
+        {
+          "category": "PowerVS Instance",
+          "module": "module.pi_instance_aix.module.pi_instance.ibm_pi_instance.instance",
+          "description": "2026/06/26 15:49:23 Terraform plan | Planning failed. Terraform encountered an error while generating this plan.\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan | Error: failed to Get PVM Instance ac9b8339-a14e-48b3-aad5-a56e0b45393f :[GET /pcloud/v1/cloud-instances/{cloud_instance_id}/pvm-instances/{pvm_instance_id}][404] pcloudPvminstancesGetNotFound {\"description\":\"pvm-instance does not exist. ID: ac9b8339-a14e-48b3-aad5-a56e0b45393f\",\"error\":\"pvm-instance not found\"}\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan |   with module.pi_instance_aix.module.pi_instance.ibm_pi_instance.instance,\n2026/06/26 15:49:23 Terraform plan |   on .terraform/modules/pi_instance_aix/modules/pi-instance/main.tf line 5, in resource \"ibm_pi_instance\" \"instance\":\n2026/06/26 15:49:23 Terraform plan |    5: resource \"ibm_pi_instance\" \"instance\" {\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan | Error: failed to Get PVM Instance 7f00521e-6baa-436b-9862-0c6ccad9fb0b :[GET /pcloud/v1/cloud-instances/{cloud_instance_id}/pvm-instances/{pvm_instance_id}][404] pcloudPvminstancesGetNotFound {\"description\":\"pvm-instance does not exist. ID: 7f00521e-6baa-436b-9862-0c6ccad9fb0b\",\"error\":\"pvm-instance not found\"}\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan |   with module.pi_instance_rhel.module.pi_instance.ibm_pi_instance.instance,\n2026/06/26 15:49:23 Terraform plan |   on .terraform/modules/pi_instance_rhel/modules/pi-instance/main.tf line 5, in resource \"ibm_pi_instance\" \"instance\":\n2026/06/26 15:49:23 Terraform plan |    5: resource \"ibm_pi_instance\" \"instance\" {\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform PLAN error: Terraform PLAN errorexit status 1\n2026/06/26 15:49:23 Starting command: terraform1.10 show -no-color -json tfplan.binary\n2026/06/26 15:49:23 Starting command: terraform1.10 show -no-color -json tfplan.binary\n2026/06/26 15:49:24 Command finished successfully."
+        },
+        {
+          "category": "PowerVS Instance",
+          "module": "module.pi_instance_rhel.module.pi_instance.ibm_pi_instance.instance",
+          "description": "2026/06/26 15:49:23 Terraform plan | Planning failed. Terraform encountered an error while generating this plan.\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan | Error: failed to Get PVM Instance ac9b8339-a14e-48b3-aad5-a56e0b45393f :[GET /pcloud/v1/cloud-instances/{cloud_instance_id}/pvm-instances/{pvm_instance_id}][404] pcloudPvminstancesGetNotFound {\"description\":\"pvm-instance does not exist. ID: ac9b8339-a14e-48b3-aad5-a56e0b45393f\",\"error\":\"pvm-instance not found\"}\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan |   with module.pi_instance_aix.module.pi_instance.ibm_pi_instance.instance,\n2026/06/26 15:49:23 Terraform plan |   on .terraform/modules/pi_instance_aix/modules/pi-instance/main.tf line 5, in resource \"ibm_pi_instance\" \"instance\":\n2026/06/26 15:49:23 Terraform plan |    5: resource \"ibm_pi_instance\" \"instance\" {\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan | Error: failed to Get PVM Instance 7f00521e-6baa-436b-9862-0c6ccad9fb0b :[GET /pcloud/v1/cloud-instances/{cloud_instance_id}/pvm-instances/{pvm_instance_id}][404] pcloudPvminstancesGetNotFound {\"description\":\"pvm-instance does not exist. ID: 7f00521e-6baa-436b-9862-0c6ccad9fb0b\",\"error\":\"pvm-instance not found\"}\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform plan |   with module.pi_instance_rhel.module.pi_instance.ibm_pi_instance.instance,\n2026/06/26 15:49:23 Terraform plan |   on .terraform/modules/pi_instance_rhel/modules/pi-instance/main.tf line 5, in resource \"ibm_pi_instance\" \"instance\":\n2026/06/26 15:49:23 Terraform plan |    5: resource \"ibm_pi_instance\" \"instance\" {\n2026/06/26 15:49:23 Terraform plan |\n2026/06/26 15:49:23 Terraform PLAN error: Terraform PLAN errorexit status 1\n2026/06/26 15:49:23 Starting command: terraform1.10 show -no-color -json tfplan.binary\n2026/06/26 15:49:23 Starting command: terraform1.10 show -no-color -json tfplan.binary\n2026/06/26 15:49:24 Command finished successfully."
+        }
+      ]
+    },
+    "_action_id": "d26c002ac569a5fae9d7ff674ca1d4d4"
+  },
+  {
+    "Date": "2026-04-26",
+    "workspacename": "Oracle-on-IBM-Power-Virtual-Server-racprv",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.15.11",
+    "Error": {
+      "errorCount": 2,
+      "categories": [
+        "Remote Exec"
+      ],
+      "details": [
+        {
+          "category": "Remote Exec",
+          "module": "module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0]",
+          "description": "2026/04/26 15:46:48 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):   Checking Host Key: false\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Connected!\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Proxy configured in /etc/bashrc: http://10.169.2.9:3128\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): /root/terraform_files/ansible_node_packages.sh: line 40: dmidecode: command not found\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Virtual server instance ID:\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - System Time (UTC): 2026-04-26T15:49:36Z\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Updating /etc/hosts file\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Created backup: /etc/hosts.backup\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - /etc/hosts updated successfully\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Added entries:\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO -   10.20.40.51 isv-aix-1\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO -   10.20.40.175 isv-aix-2\n2026/04/26 15:46:49 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): File '/usr/share/powervs-fls/powervs-fls-readme.md' exists and has a size greater than zero.\n2026/04/26 15:46:50 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): +-------------------------------------------+\n2026/04/26 15:46:50 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):    System Status Details\n2026/04/26 15:46:50 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): +-------------------------------------------+\n2026/04/26 15:46:50 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Overall Status: Unknown\n2026/04/26 15:46:50 Terraform apply |\n2026/04/26 15:46:50 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): System Purpose Status: Unknown\n2026/04/26 15:46:50 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Script is running in background and may take a few minutes. Please do not kill any background process while this runs"
+        },
+        {
+          "category": "Remote Exec",
+          "module": "module.oracle_install.terraform_data.execute_playbooks[0]",
+          "description": "2026/04/26 16:36:13 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m30s elapsed]\n2026/04/26 16:36:23 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m40s elapsed]\n2026/04/26 16:36:33 Terraform apply | module.oracle_install.terraform_data.execute_playbooks[0]: Still creating... [39m50s elapsed]\n... (17 more 'Still creating...' lines omitted)"
+        }
+      ]
+    },
+    "_action_id": "24e1890125392c586d9ff05cf0454acd"
+  },
+  {
+    "Date": "2026-04-20",
+    "workspacename": "ORACLE-PRIV-RAC-CD",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.15.3",
+    "Error": {
+      "errorCount": 0,
+      "categories": [],
+      "details": []
+    },
+    "_action_id": "cfab4563ab3afd018809f970b1475d63"
+  },
+  {
+    "Date": "2026-07-05",
+    "workspacename": "Oracle-on-IBM-Power-Virtual-Server-9c5e",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "4.19.8",
+    "Error": {
+      "errorCount": 2,
+      "categories": [
+        "Deprecated Action / Dependency",
+        "SSH Key"
+      ],
+      "details": [
+        {
+          "category": "SSH Key",
+          "module": "module.standard.module.landing_zone.module.landing_zone.module.ssh_keys.ibm_is_ssh_key.ssh_key[\"ssh-key\"]",
+          "description": "2026/07/05 17:01:10 Terraform apply |\n2026/07/05 17:01:10 Terraform apply | (and 97 more similar warnings elsewhere)\n2026/07/05 17:01:10 Terraform apply |\n2026/07/05 17:01:10 Terraform apply | Error: ---\n2026/07/05 17:01:10 Terraform apply | id: terraform-6632fcc9\n2026/07/05 17:01:10 Terraform apply | summary: 'CreateKeyWithContext failed: Key with fingerprint already exists'\n2026/07/05 17:01:10 Terraform apply | severity: error\n2026/07/05 17:01:10 Terraform apply | resource: ibm_is_ssh_key\n2026/07/05 17:01:10 Terraform apply | operation: create\n2026/07/05 17:01:10 Terraform apply | component:\n2026/07/05 17:01:10 Terraform apply |   name: github.com/IBM-Cloud/terraform-provider-ibm\n2026/07/05 17:01:10 Terraform apply |   version: 2.4.0\n2026/07/05 17:01:10 Terraform apply | ---\n2026/07/05 17:01:10 Terraform apply |\n2026/07/05 17:01:10 Terraform apply |\n2026/07/05 17:01:10 Terraform apply |   with module.standard.module.landing_zone.module.landing_zone.module.ssh_keys.ibm_is_ssh_key.ssh_key[\"ssh-key\"],\n2026/07/05 17:01:10 Terraform apply |   on .terraform/modules/standard.landing_zone/ssh_key/main.tf line 5, in resource \"ibm_is_ssh_key\" \"ssh_key\":\n2026/07/05 17:01:10 Terraform apply |    5: resource \"ibm_is_ssh_key\" \"ssh_key\" {\n2026/07/05 17:01:10 Terraform apply |\n2026/07/05 17:01:10 Terraform APPLY error: Terraform APPLY errorexit status 1"
+        },
+        {
+          "category": "Deprecated Action / Dependency",
+          "module": "module.standard.module.landing_zone.module.landing_zone.ibm_is_security_group_rule.security_group_rules[\"management-sg-allow-ssh-inbound-schematics26\"]",
+          "description": "2026/07/05 17:01:10 Terraform apply |\n2026/07/05 17:01:10 Terraform apply | (and 97 more similar warnings elsewhere)\n2026/07/05 17:01:10 Terraform apply |\n2026/07/05 17:01:10 Terraform apply | Error: ---\n2026/07/05 17:01:10 Terraform apply | id: terraform-6632fcc9\n2026/07/05 17:01:10 Terraform apply | summary: 'CreateKeyWithContext failed: Key with fingerprint already exists'\n2026/07/05 17:01:10 Terraform apply | severity: error\n2026/07/05 17:01:10 Terraform apply | resource: ibm_is_ssh_key\n2026/07/05 17:01:10 Terraform apply | operation: create\n2026/07/05 17:01:10 Terraform apply | component:\n2026/07/05 17:01:10 Terraform apply |   name: github.com/IBM-Cloud/terraform-provider-ibm\n2026/07/05 17:01:10 Terraform apply |   version: 2.4.0\n2026/07/05 17:01:10 Terraform apply | ---\n2026/07/05 17:01:10 Terraform apply |\n2026/07/05 17:01:10 Terraform apply |\n2026/07/05 17:01:10 Terraform apply |   with module.standard.module.landing_zone.module.landing_zone.module.ssh_keys.ibm_is_ssh_key.ssh_key[\"ssh-key\"],\n2026/07/05 17:01:10 Terraform apply |   on .terraform/modules/standard.landing_zone/ssh_key/main.tf line 5, in resource \"ibm_is_ssh_key\" \"ssh_key\":\n2026/07/05 17:01:10 Terraform apply |    5: resource \"ibm_is_ssh_key\" \"ssh_key\" {\n2026/07/05 17:01:10 Terraform apply |\n2026/07/05 17:01:10 Terraform APPLY error: Terraform APPLY errorexit status 1"
+        }
+      ]
+    },
+    "_action_id": "483e3727a94f5ea90bc416c6b841ff87"
+  },
+  {
+    "Date": "2026-02-27",
+    "workspacename": "Oracle-on-IBM-Power-Virtual-Server-9e92",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "1.1.0",
+    "Error": {
+      "errorCount": 3,
+      "categories": [
+        "Deprecated Action / Dependency",
+        "Remote Exec",
+        "Subscription / Licensing"
+      ],
+      "details": [
+        {
+          "category": "Remote Exec",
+          "module": "module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0]",
+          "description": "2026/02/27 16:44:28 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):   Checking Host Key: false\n2026/02/27 16:44:28 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Connected!\n2026/02/27 16:44:28 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Proxy configured in /etc/bashrc: http://10.169.2.9:3128\n2026/02/27 16:44:29 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): /root/terraform_files/ansible_node_packages.sh: line 40: dmidecode: command not found\n2026/02/27 16:44:29 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Virtual server instance ID:\n2026/02/27 16:44:29 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - System Time (UTC): 2025-04-08T00:06:15Z\n2026/02/27 16:44:29 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - No host entries provided, skipping /etc/hosts update\n2026/02/27 16:44:29 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): FLS registration failed please refer https://www.ibm.com/docs/en/power-virtual-server?topic=linux-full-subscription-power-virtual-server-private-cloud\n2026/02/27 16:44:33 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_instance.instance: Still creating... [10m40s elapsed]\n2026/02/27 16:44:43 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_instance.instance: Still creating... [10m50s elapsed]\n2026/02/27 16:44:53 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_instance.instance: Still creating... [11m0s elapsed]\n... (9 more 'Still creating...' lines omitted)"
+        },
+        {
+          "category": "Subscription / Licensing",
+          "module": "module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0]",
+          "description": "2026/02/27 16:44:28 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec):   Checking Host Key: false\n2026/02/27 16:44:28 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): Connected!\n2026/02/27 16:44:28 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Proxy configured in /etc/bashrc: http://10.169.2.9:3128\n2026/02/27 16:44:29 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): /root/terraform_files/ansible_node_packages.sh: line 40: dmidecode: command not found\n2026/02/27 16:44:29 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - Virtual server instance ID:\n2026/02/27 16:44:29 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - System Time (UTC): 2025-04-08T00:06:15Z\n2026/02/27 16:44:29 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): INFO - No host entries provided, skipping /etc/hosts update\n2026/02/27 16:44:29 Terraform apply | module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0] (remote-exec): FLS registration failed please refer https://www.ibm.com/docs/en/power-virtual-server?topic=linux-full-subscription-power-virtual-server-private-cloud\n2026/02/27 16:44:33 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_instance.instance: Still creating... [10m40s elapsed]\n2026/02/27 16:44:43 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_instance.instance: Still creating... [10m50s elapsed]\n2026/02/27 16:44:53 Terraform apply | module.pi_instance_aix.module.pi_instance.ibm_pi_instance.instance: Still creating... [11m0s elapsed]\n... (9 more 'Still creating...' lines omitted)"
+        },
+        {
+          "category": "Deprecated Action / Dependency",
+          "module": "module.pi_instance_aix.module.pi_instance.data.ibm_pi_instance_ip.instance_primary_ip_ds",
+          "description": "2026/02/27 16:51:13 Terraform apply |\n2026/02/27 16:51:13 Terraform apply | (and 3 more similar warnings elsewhere)\n2026/02/27 16:51:13 Terraform apply |\n2026/02/27 16:51:13 Terraform apply | Error: remote-exec provisioner error\n2026/02/27 16:51:13 Terraform apply |\n2026/02/27 16:51:13 Terraform apply |   with module.pi_instance_rhel_init.terraform_data.setup_ansible_host[0],\n2026/02/27 16:51:13 Terraform apply |   on ../../../modules/ansible/main.tf line 72, in resource \"terraform_data\" \"setup_ansible_host\":\n2026/02/27 16:51:13 Terraform apply |   72:   provisioner \"remote-exec\" {\n2026/02/27 16:51:13 Terraform apply |\n2026/02/27 16:51:13 Terraform apply | error executing \"/tmp/terraform_664908666.sh\": Process exited with status 1\n2026/02/27 16:51:13 Terraform APPLY error: Terraform APPLY errorexit status 1\n2026/02/27 16:51:13 Starting command: terraform1.10 output -no-color -json\n2026/02/27 16:51:13 Starting command: terraform1.10 output -no-color -json\n2026/02/27 16:51:14 Command finished successfully.\n2026/02/27 16:51:14 -----  Schematics Cost Estimation  -----\n2026/02/27 16:51:14 Cost estimation with default usage\n2026/02/27 16:51:14 Starting command: infracost breakdown -p tfplan.json --format json --out-file cost.json --project-name Oracle on IBM Power Virtual Server\n2026/02/27 16:51:14 Schematics Cost Estimation | Detected Terraform plan JSON file at tfplan.json\n2026/02/27 16:51:14 Schematics Cost Estimation |\n\u280b Extracting only cost-related params from terraform"
+        }
+      ]
+    },
+    "_action_id": "14e307895ed502c50543ce77f663a627"
+  },
+  {
+    "Date": "2026-03-13",
+    "workspacename": "deploy-arch-ibm-powervs-oracle-03-13-2026",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "2.0.1",
+    "Error": {
+      "errorCount": 0,
+      "categories": [],
+      "details": []
+    },
+    "_action_id": "f526b975032de783c072236f0340c596"
+  },
+  {
+    "Date": "2026-03-13",
+    "workspacename": "deploy-arch-ibm-powervs-oracle-03-13-2026",
+    "Repo": "Oracle on IBM Power Virtual Server",
+    "Version": "2.0.1",
+    "Error": {
+      "errorCount": 0,
+      "categories": [],
+      "details": []
+    },
+    "_action_id": "f526b975032de783c072236f0340be48"
+  }
+]

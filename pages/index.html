@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="IBM Intelligent Log Analyzer" />
+    <meta name="author" content="" />
+    <title>IBM Intelligent Log Analyzer</title>
+
+    <!-- IBM Carbon Design System CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/carbon-components@10.58.0/css/carbon-components.min.css">
+
+    <!-- IBM Plex Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap">
+
+    <!-- Navigation Styles -->
+    <link rel="stylesheet" href="../assets/css/navigation.css?v=3.4.0">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        /* ── Page wrapper ── */
+        .page-inner {
+            padding: 0 2rem 2rem;
+            max-width: 1200px;
+        }
+
+        /* ── Page header ── */
+        .dash-header {
+            padding: 2rem 0 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 2rem;
+        }
+
+        .dash-header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0 0 0.35rem;
+            color: #161616;
+            line-height: 1.25;
+        }
+
+        .dash-header p {
+            font-size: 0.875rem;
+            color: #525252;
+            margin: 0;
+        }
+
+        /* ── Section label ── */
+        .section-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #525252;
+            margin: 0 0 0.75rem;
+        }
+
+        /* ── Feature tile (Stability) ── */
+        .feature-tile-link {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            padding: 1.25rem 1.5rem;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #da1e28;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 2rem;
+            transition: box-shadow 0.11s, border-color 0.11s;
+        }
+
+        .feature-tile-link:hover {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+            border-left-color: #a2191f;
+        }
+
+        .feature-tile-icon {
+            flex-shrink: 0;
+            color: #da1e28;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-tile-body h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem;
+            color: #161616;
+        }
+
+        .feature-tile-body p {
+            font-size: 0.8125rem;
+            color: #525252;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* ── Dashboard tiles grid ── */
+        .dashboard-tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* ── Shared tile base ── */
+        .dash-tile {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-top: 3px solid #da1e28;
+            padding: 1.25rem;
+        }
+
+        /* ── Tile header row ── */
+        .tile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tile-header h2 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            margin: 0;
+            color: #161616;
+        }
+
+        .view-all-link {
+            font-size: 0.8125rem;
+            color: #0f62fe;
+            text-decoration: none;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ── Stat summary row ── */
+        .tile-stat {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tile-stat-label {
+            font-size: 0.8125rem;
+            color: #525252;
+        }
+
+        .tile-stat-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #da1e28;
+            line-height: 1;
+        }
+
+        /* ── Error chart area ── */
+        .error-content {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .error-chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .error-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .legend-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: 1;
+            gap: 0.5rem;
+        }
+
+        .legend-category {
+            font-size: 0.75rem;
+            color: #161616;
+            flex: 1;
+        }
+
+        .legend-count {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #161616;
+            min-width: 1.5rem;
+            text-align: right;
+        }
+
+        /* ── Recent runs list ── */
+        .recent-errors-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .recent-error-item {
+            padding: 0.625rem 0.75rem;
+            background-color: #f4f4f4;
+            border-left: 3px solid #da1e28;
+        }
+
+        .error-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.15rem;
+        }
+
+        .error-item-dc {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #161616;
+        }
+
+        .error-item-date {
+            font-size: 0.6875rem;
+            color: #525252;
+        }
+
+        .error-item-category {
+            font-size: 0.75rem;
+            color: #525252;
+        }
+
+        /* ── Dark mode ── */
+        @media (prefers-color-scheme: dark) {
+            .dash-header {
+                border-bottom-color: #393939;
+            }
+
+            .dash-header h1 {
+                color: #f4f4f4;
+            }
+
+            .dash-header p,
+            .section-label {
+                color: #a8a8a8;
+            }
+
+            .feature-tile-link {
+                background-color: #262626;
+                border-color: #393939;
+            }
+
+            .feature-tile-body h3 {
+                color: #f4f4f4;
+            }
+
+            .feature-tile-body p {
+                color: #a8a8a8;
+            }
+
+            .dash-tile {
+                background-color: #262626;
+                border-color: #393939;
+            }
+
+            .tile-header {
+                border-bottom-color: #393939;
+            }
+
+            .tile-header h2 {
+                color: #f4f4f4;
+            }
+
+            .tile-stat-label {
+                color: #a8a8a8;
+            }
+
+            .legend-category,
+            .legend-count {
+                color: #f4f4f4;
+            }
+
+            .recent-error-item {
+                background-color: #333333;
+            }
+
+            .error-item-dc {
+                color: #f4f4f4;
+            }
+
+            .error-item-date,
+            .error-item-category {
+                color: #a8a8a8;
+            }
+
+            .view-all-link {
+                color: #78a9ff;
+            }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .page-inner {
+                padding: 0 1rem 2rem;
+            }
+
+            .error-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .error-chart-container {
+                justify-content: center;
+            }
+
+            .dashboard-tiles {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <!-- WatsonX Chatbot -->
+    <link rel="stylesheet" href="../assets/css/chatbot.css">
+</head>
+
+<body>
+    <!-- Carbon UI Shell Header -->
+    <header class="bx--header" role="banner" aria-label="IBM Intelligent Log Analyzer">
+        <button class="bx--header__action bx--header__menu-trigger bx--header__menu-toggle bx--side-nav__toggle"
+            aria-label="Open menu" title="Open menu" type="button">
+            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" aria-label="Open menu" width="20" height="20" viewBox="0 0 20 20" role="img">
+                <path d="M2 14.8H18V16H2zM2 11.2H18V12.399999999999999H2zM2 7.6H18V8.799999999999999H2zM2 4H18V5.2H2z">
+                </path>
+            </svg>
+        </button>
+        <span class="bx--header__name">IBM Intelligent Log Analyzer</span>
+    </header>
+
+    <!-- Carbon Side Navigation -->
+    <nav data-side-nav class="bx--side-nav bx--side-nav--ux bx--side-nav--expanded" aria-label="Side navigation">
+        <nav class="bx--side-nav__navigation">
+            <ul class="bx--side-nav__items">
+                <li class="bx--side-nav__item">
+                    <a class="bx--side-nav__link bx--side-nav__link--current" href="index.html">
+                        <div class="bx--side-nav__icon">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+                                viewBox="0 0 32 32" aria-hidden="true">
+                                <path
+                                    d="M16.6123,2.2138a1.01,1.01,0,0,0-1.2427,0L1,13.4194l1.2427,1.5717L4,13.6209V26a2.0041,2.0041,0,0,0,2,2H26a2.0037,2.0037,0,0,0,2-2V13.63L29.7573,15,31,13.4282ZM18,26H14V18h4Zm2,0V18a2.0023,2.0023,0,0,0-2-2H14a2.002,2.002,0,0,0-2,2v8H6V12.0615l10-7.79,10,7.8005V26Z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span class="bx--side-nav__link-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="bx--side-nav__item">
+                    <a class="bx--side-nav__link" href="dc_scheduled_runs.html">
+                        <div class="bx--side-nav__icon">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+                                viewBox="0 0 32 32" aria-hidden="true">
+                                <path
+                                    d="M28.7071,19.293,26,16.5859V13a2.0023,2.0023,0,0,0-2-2H22V9a2.0023,2.0023,0,0,0-2-2H18V4h2V2H12V4h2V7H12a2.0023,2.0023,0,0,0-2,2v2H8a2.0023,2.0023,0,0,0-2,2v9H4v2H6v4H8V24h2v4h2V24h2v4h2V24h2v4h2V24h2v4h2V24h2V22H24V13h2v3a.9991.9991,0,0,0,.293.707l3,3,1.414-1.414ZM12,9h8v2H12Zm0,4h8v9H12Z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span class="bx--side-nav__link-text">Stability</span>
+                    </a>
+                </li>
+                <li class="bx--side-nav__item">
+                    <a class="bx--side-nav__link" href="dc_scheduled_runs_analytics.html">
+                        <div class="bx--side-nav__icon">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+                                viewBox="0 0 32 32" aria-hidden="true">
+                                <path d="M26 24v-2H6V6H4v18a2 2 0 002 2h20zM8 20l5-5 4 4 5-6 3 3V10l-3 3-5 6-4-4-5 5z"/>
+                            </svg>
+                        </div>
+                        <span class="bx--side-nav__link-text">Analytics</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="bx--content">
+        <div class="page-inner">
+
+            <!-- Page Header -->
+            <div class="dash-header">
+                <h1>Log Analysis Dashboard</h1>
+                <p>Scheduled architecture run results, error trends, and stability metrics for IBM Intelligent Log Analyzer.</p>
+            </div>
+
+            <!-- Feature: Stability -->
+            <p class="section-label">Overview</p>
+            <a href="dc_scheduled_runs.html" class="feature-tile-link">
+                <div class="feature-tile-icon">
+                    <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                        <path
+                            d="M28.7071,19.293,26,16.5859V13a2.0023,2.0023,0,0,0-2-2H22V9a2.0023,2.0023,0,0,0-2-2H18V4h2V2H12V4h2V7H12a2.0023,2.0023,0,0,0-2,2v2H8a2.0023,2.0023,0,0,0-2,2v9H4v2H6v4H8V24h2v4h2V24h2v4h2V24h2v4h2V24h2v4h2V24h2V22H24V13h2v3a.9991.9991,0,0,0,.293.707l3,3,1.414-1.414ZM12,9h8v2H12Zm0,4h8v9H12Z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="feature-tile-body">
+                    <h3>Scheduled Runs Stability</h3>
+                    <p>Track end-to-end scheduled architecture runs, failures, and error trends across datacenters.</p>
+                </div>
+            </a>
+
+            <!-- Analytics Tiles -->
+            <p class="section-label">Analytics</p>
+            <div class="dashboard-tiles">
+
+                <!-- Error Analysis Tile -->
+                <div class="dash-tile">
+                    <div class="tile-header">
+                        <h2>Error Analysis</h2>
+                        <a href="dc_scheduled_runs_analytics.html" class="view-all-link">View details →</a>
+                    </div>
+                    <div class="tile-stat">
+                        <span class="tile-stat-label">Total errors (last 30 days)</span>
+                        <span class="tile-stat-value" id="total-errors">–</span>
+                    </div>
+                    <div class="error-content">
+                        <div class="error-chart-container">
+                            <canvas id="error-chart" width="140" height="140"></canvas>
+                        </div>
+                        <div class="error-legend" id="error-legend">
+                            <!-- populated by dashboard_tiles.js -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Latest DA Runs Tile -->
+                <div class="dash-tile">
+                    <div class="tile-header">
+                        <h2>Latest DA Runs</h2>
+                        <a href="dc_scheduled_runs.html" class="view-all-link">View all →</a>
+                    </div>
+                    <div class="tile-stat">
+                        <span class="tile-stat-label">Total runs</span>
+                        <span class="tile-stat-value" id="total-runs">–</span>
+                    </div>
+                    <div class="recent-errors-list" id="recent-errors-list">
+                        <!-- populated by dashboard_tiles.js -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Carbon Components JavaScript -->
+    <script src="https://unpkg.com/carbon-components@10.58.0/scripts/carbon-components.min.js"></script>
+
+    <!-- Dashboard Tiles JavaScript -->
+    <script src="../assets/js/dashboard_tiles.js"></script>
+
+    <script>
+        var sideNavElement = document.querySelector('[data-side-nav]');
+        var sideNav = CarbonComponents.SideNav.create(sideNavElement);
+
+        var toggleButton = document.querySelector('.bx--side-nav__toggle');
+        if (toggleButton && sideNav) {
+            toggleButton.addEventListener('click', function () {
+                var isExpanded = sideNavElement.classList.contains('bx--side-nav--expanded');
+                if (isExpanded) {
+                    sideNavElement.classList.remove('bx--side-nav--expanded');
+                    sideNavElement.classList.add('bx--side-nav--rail');
+                } else {
+                    sideNavElement.classList.remove('bx--side-nav--rail');
+                    sideNavElement.classList.add('bx--side-nav--expanded');
+                }
+            });
+        }
+    </script>
+
+    <!-- WatsonX Chatbot -->
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
+</body>
+
+</html>

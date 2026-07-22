@@ -1,0 +1,630 @@
+/* IBM Cloud Carbon Design - CSS Variables for Theme Support */
+:root {
+    /* Light Mode (Default) */
+    --nav-bg-primary: #f4f4f4;
+    --nav-bg-secondary: #ffffff;
+    --nav-border: #e0e0e0;
+    --nav-text-primary: #161616;
+    --nav-text-secondary: #525252;
+    --nav-hover-bg: #e8e8e8;
+    --nav-active-bg: #e0e0e0;
+    --nav-active-text: #161616;
+    --nav-focus-border: #0f62fe;
+    --nav-accent: #0f62fe;
+
+    /* Page Content Colors */
+    --page-bg: #f4f4f4;
+    --content-bg: #ffffff;
+    --content-text: #161616;
+    --content-text-secondary: #525252;
+    --table-header-bg: #e0e0e0;
+    --table-hover-bg: #e5e5e5;
+    --table-border: #e0e0e0;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --nav-bg-primary: #262626;
+        --nav-bg-secondary: #161616;
+        --nav-border: #393939;
+        --nav-text-primary: #ffffff;
+        --nav-text-secondary: #ffffff;
+        --nav-hover-bg: #2d2d2d;
+        --nav-active-bg: #393939;
+        --nav-active-text: #ffffff;
+        --nav-focus-border: #ffffff;
+        --nav-accent: #78a9ff;
+
+        /* Page Content Colors - Dark Mode */
+        --page-bg: #161616;
+        --content-bg: #333333;
+        --content-text: #ffffff;
+        --content-text-secondary: #c6c6c6;
+        --table-header-bg: #393939;
+        --table-hover-bg: #4c4c4c;
+        --table-border: #404040;
+    }
+}
+
+/* Manual Dark Mode Override */
+[data-carbon-theme="g100"],
+[data-carbon-theme="g90"],
+body.dark-mode {
+    --nav-bg-primary: #262626;
+    --nav-bg-secondary: #161616;
+    --nav-border: #393939;
+    --nav-text-primary: #ffffff;
+    --nav-text-secondary: #ffffff;
+    --nav-hover-bg: #2d2d2d;
+    --nav-active-bg: #393939;
+    --nav-active-text: #ffffff;
+    --nav-focus-border: #ffffff;
+    --nav-accent: #78a9ff;
+
+    /* Page Content Colors - Dark Mode */
+    --page-bg: #161616;
+    --content-bg: #333333;
+    --content-text: #ffffff;
+    --content-text-secondary: #c6c6c6;
+    --table-header-bg: #393939;
+    --table-hover-bg: #4c4c4c;
+    --table-border: #404040;
+}
+
+/* Manual Light Mode Override */
+[data-carbon-theme="white"],
+[data-carbon-theme="g10"],
+body.light-mode {
+    --nav-bg-primary: #f4f4f4;
+    --nav-bg-secondary: #ffffff;
+    --nav-border: #e0e0e0;
+    --nav-text-primary: #161616;
+    --nav-text-secondary: #525252;
+    --nav-hover-bg: #e8e8e8;
+    --nav-active-bg: #e0e0e0;
+    --nav-active-text: #161616;
+    --nav-focus-border: #0f62fe;
+    --nav-accent: #0f62fe;
+}
+
+/* Header Customization - IBM Cloud Carbon Design */
+/* Header is always dark/black like IBM Cloud UI, regardless of theme */
+.bx--header {
+    background-color: #161616;
+    border-bottom: 1px solid #393939;
+    display: flex;
+    align-items: center;
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+}
+
+.bx--header__name {
+    color: #f4f4f4;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding-left: 1rem;
+    pointer-events: none;
+    flex-shrink: 0;
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+}
+
+.bx--header__action {
+    color: #f4f4f4;
+    flex-shrink: 0;
+}
+
+.bx--header__action:hover {
+    background-color: #262626;
+}
+
+.bx--header__menu-toggle {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Side Navigation - IBM Cloud Carbon Design */
+.bx--side-nav {
+    background-color: var(--nav-bg-primary);
+    border-right: 1px solid var(--nav-border);
+    display: flex;
+    flex-direction: column;
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+}
+
+.bx--side-nav__header {
+    background-color: var(--nav-bg-secondary);
+    padding: 1rem;
+    border-bottom: 1px solid var(--nav-border);
+}
+
+.bx--side-nav__header-title {
+    color: var(--nav-text-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0;
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+}
+
+.bx--side-nav__navigation {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.bx--side-nav__items {
+    padding-top: 1rem;
+    flex: 1;
+}
+
+.bx--side-nav__footer {
+    padding: 1rem;
+    border-top: 1px solid var(--nav-border);
+    background-color: var(--nav-bg-secondary);
+}
+
+.bx--side-nav__footer-text {
+    color: var(--nav-text-secondary);
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin: 0;
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+}
+
+/* Navigation Links - IBM Cloud Style with Theme Support */
+.bx--side-nav__link {
+    color: var(--nav-text-secondary) !important;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    transition: background-color 250ms cubic-bezier(0.5, 0, 0.1, 1), color 250ms cubic-bezier(0.5, 0, 0.1, 1);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.16px;
+    line-height: 1.28572;
+    position: relative;
+    background-color: transparent;
+    border: 2px solid transparent;
+    -webkit-font-smoothing: antialiased;
+}
+
+.bx--side-nav__link:hover {
+    background-color: var(--nav-hover-bg);
+    color: var(--nav-text-primary) !important;
+}
+
+.bx--side-nav__link:focus {
+    border-color: var(--nav-focus-border);
+    outline: 0;
+}
+
+/* Active/Current Link - Grey background with white text in dark mode */
+.bx--side-nav__link--current,
+.bx--side-nav__link--current:hover {
+    background-color: var(--nav-active-bg) !important;
+    border-left: 3px solid var(--nav-accent) !important;
+    color: var(--nav-active-text) !important;
+    font-weight: 600;
+}
+
+.bx--side-nav__link--current .bx--side-nav__link-text,
+.bx--side-nav__link--current:hover .bx--side-nav__link-text {
+    color: var(--nav-active-text) !important;
+}
+
+.bx--side-nav__link--current .bx--side-nav__icon,
+.bx--side-nav__link--current:hover .bx--side-nav__icon {
+    color: var(--nav-active-text) !important;
+}
+
+.bx--side-nav__link-text {
+    font-size: 0.875rem;
+    color: inherit;
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.bx--side-nav__link:hover .bx--side-nav__link-text {
+    color: var(--nav-text-primary) !important;
+}
+
+.bx--side-nav__icon {
+    margin-right: 1rem;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    flex-shrink: 0;
+}
+
+.bx--side-nav__link:hover .bx--side-nav__icon {
+    color: var(--nav-text-primary);
+}
+
+.bx--side-nav__icon svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+/* Rail mode adjustments */
+.bx--side-nav--rail .bx--side-nav__link-text {
+    display: none;
+}
+
+.bx--side-nav--rail .bx--side-nav__header {
+    padding: 1rem 0.5rem;
+}
+
+.bx--side-nav--rail .bx--side-nav__footer {
+    padding: 1rem 0.5rem;
+}
+
+.bx--side-nav--rail .bx--side-nav__footer-text {
+    display: none;
+}
+
+/* Rail mode hover - expand and show text */
+.bx--side-nav--rail:hover {
+    width: 16rem;
+}
+
+.bx--side-nav--rail:hover .bx--side-nav__link-text {
+    display: inline;
+}
+
+.bx--side-nav--rail:hover .bx--side-nav__header {
+    padding: 1rem;
+}
+
+.bx--side-nav--rail:hover .bx--side-nav__footer {
+    padding: 1rem;
+}
+
+.bx--side-nav--rail:hover .bx--side-nav__footer-text {
+    display: block;
+}
+
+#dataTableStatus_filter {
+    display: none;
+}
+
+/* Dark Mode Specific Overrides */
+@media (prefers-color-scheme: dark) {
+    /* Make all navigation links white in dark mode */
+    .bx--side-nav__link {
+        color: #ffffff !important;
+    }
+
+    .bx--side-nav__link-text {
+        color: #ffffff !important;
+    }
+
+    .bx--side-nav__icon {
+        color: #ffffff !important;
+    }
+
+    /* Hover state - subtle grey */
+    .bx--side-nav__link:hover {
+        background-color: #2d2d2d !important;
+        color: #ffffff !important;
+    }
+
+    .bx--side-nav__link:hover .bx--side-nav__link-text {
+        color: #ffffff !important;
+    }
+
+    .bx--side-nav__link:hover .bx--side-nav__icon {
+        color: #ffffff !important;
+    }
+
+    /* Selected/Active state - darker grey with bold text */
+    .bx--side-nav__link--current,
+    .bx--side-nav__link--current:hover {
+        background-color: #393939 !important;
+        border-left: 3px solid #78a9ff !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+
+    .bx--side-nav__link--current .bx--side-nav__link-text,
+    .bx--side-nav__link--current:hover .bx--side-nav__link-text {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+
+    .bx--side-nav__link--current .bx--side-nav__icon,
+    .bx--side-nav__link--current:hover .bx--side-nav__icon {
+        color: #ffffff !important;
+    }
+}
+
+/* Manual Dark Mode Override */
+[data-carbon-theme="g100"] .bx--side-nav__link,
+[data-carbon-theme="g90"] .bx--side-nav__link,
+body.dark-mode .bx--side-nav__link {
+    color: #ffffff !important;
+}
+
+[data-carbon-theme="g100"] .bx--side-nav__link-text,
+[data-carbon-theme="g90"] .bx--side-nav__link-text,
+body.dark-mode .bx--side-nav__link-text {
+    color: #ffffff !important;
+}
+
+[data-carbon-theme="g100"] .bx--side-nav__icon,
+[data-carbon-theme="g90"] .bx--side-nav__icon,
+body.dark-mode .bx--side-nav__icon {
+    color: #ffffff !important;
+}
+
+[data-carbon-theme="g100"] .bx--side-nav__link:hover,
+[data-carbon-theme="g90"] .bx--side-nav__link:hover,
+body.dark-mode .bx--side-nav__link:hover {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+}
+
+[data-carbon-theme="g100"] .bx--side-nav__link--current,
+[data-carbon-theme="g90"] .bx--side-nav__link--current,
+body.dark-mode .bx--side-nav__link--current,
+[data-carbon-theme="g100"] .bx--side-nav__link--current:hover,
+[data-carbon-theme="g90"] .bx--side-nav__link--current:hover,
+body.dark-mode .bx--side-nav__link--current:hover {
+    background-color: #393939 !important;
+    border-left: 3px solid #78a9ff !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+[data-carbon-theme="g100"] .bx--side-nav__link--current .bx--side-nav__link-text,
+[data-carbon-theme="g90"] .bx--side-nav__link--current .bx--side-nav__link-text,
+body.dark-mode .bx--side-nav__link--current .bx--side-nav__link-text {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+
+/* Page Content Dark Mode Styles */
+body {
+    background-color: var(--page-bg) !important;
+    color: var(--content-text) !important;
+}
+
+.bx--content {
+    background-color: var(--page-bg) !important;
+}
+
+/* Page Headers */
+.page-header h1 {
+    color: var(--content-text) !important;
+}
+
+.page-header p {
+    color: var(--content-text-secondary) !important;
+}
+
+/* Data Tables */
+.bx--data-table-container {
+    background-color: var(--content-bg) !important;
+}
+
+.dc-table thead {
+    background-color: var(--table-header-bg) !important;
+}
+
+.dc-table th {
+    color: var(--content-text) !important;
+    border-bottom: 1px solid var(--table-border) !important;
+}
+
+.dc-table th:hover {
+    background-color: var(--table-hover-bg) !important;
+}
+
+.dc-table tbody tr {
+    border-bottom: 1px solid var(--table-border) !important;
+}
+
+.dc-table tbody tr:hover {
+    background-color: var(--table-hover-bg) !important;
+}
+
+.dc-table td {
+    color: var(--content-text) !important;
+}
+
+/* Fixed column widths so long workspace/variation/version values
+   truncate instead of colliding with neighboring columns */
+.dc-table {
+    table-layout: fixed;
+}
+
+.dc-table col.col-date { width: 12%; }
+.dc-table col.col-workspace { width: 20%; }
+.dc-table col.col-variation { width: 18%; }
+.dc-table col.col-version { width: 12%; }
+.dc-table col.col-errors { width: 38%; }
+
+.dc-table td.cell-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Table Footer */
+.table-footer {
+    background-color: var(--page-bg) !important;
+    border-top: 1px solid var(--table-border) !important;
+    color: var(--content-text-secondary) !important;
+}
+
+/* Also apply to bx--data-table class */
+.bx--data-table thead {
+    background-color: var(--table-header-bg) !important;
+}
+
+.bx--data-table th {
+    color: var(--content-text) !important;
+}
+
+.bx--data-table tbody tr:hover {
+    background-color: var(--table-hover-bg) !important;
+}
+
+.bx--data-table td {
+    color: var(--content-text) !important;
+}
+
+/* Cards and tiles */
+.bx--tile {
+    background-color: var(--content-bg) !important;
+}
+
+.stat-card {
+    background-color: var(--content-bg) !important;
+}
+
+.latency-card {
+    background-color: var(--content-bg) !important;
+}
+
+.bx--btn {
+    background-color: var(--content-bg) !important;
+    color: var(--content-text) !important;
+}
+
+/* Dark Mode Specific Overrides */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #161616;
+        color: #ffffff;
+    }
+
+    .bx--content {
+        background-color: #161616;
+    }
+
+    .page-header h1 {
+        color: #ffffff;
+    }
+
+    .page-header p {
+        color: #c6c6c6;
+    }
+
+    .bx--data-table-container {
+        background-color: #333333;
+    }
+
+    .dc-table thead {
+        background-color: #393939;
+    }
+
+    .dc-table th {
+        color: #ffffff;
+        border-bottom: 1px solid #404040;
+    }
+
+    .dc-table th:hover {
+        background-color: #4c4c4c;
+    }
+
+    .dc-table tbody tr {
+        border-bottom: 1px solid #404040;
+    }
+
+    .dc-table tbody tr:hover {
+        background-color: #4c4c4c;
+    }
+
+    .dc-table td {
+        color: #ffffff;
+    }
+
+    .table-footer {
+        background-color: #161616;
+        border-top: 1px solid #404040;
+        color: #c6c6c6;
+    }
+}
+
+/* Manual Dark Mode Override */
+[data-carbon-theme="g100"] body,
+[data-carbon-theme="g90"] body,
+body.dark-mode {
+    background-color: #161616;
+    color: #ffffff;
+}
+
+[data-carbon-theme="g100"] .bx--content,
+[data-carbon-theme="g90"] .bx--content,
+body.dark-mode .bx--content {
+    background-color: #161616;
+}
+
+[data-carbon-theme="g100"] .page-header h1,
+[data-carbon-theme="g90"] .page-header h1,
+body.dark-mode .page-header h1 {
+    color: #ffffff;
+}
+
+[data-carbon-theme="g100"] .page-header p,
+[data-carbon-theme="g90"] .page-header p,
+body.dark-mode .page-header p {
+    color: #c6c6c6;
+}
+
+[data-carbon-theme="g100"] .bx--data-table-container,
+[data-carbon-theme="g90"] .bx--data-table-container,
+body.dark-mode .bx--data-table-container {
+    background-color: #333333;
+}
+
+[data-carbon-theme="g100"] .dc-table thead,
+[data-carbon-theme="g90"] .dc-table thead,
+body.dark-mode .dc-table thead {
+    background-color: #393939;
+}
+
+[data-carbon-theme="g100"] .dc-table th,
+[data-carbon-theme="g90"] .dc-table th,
+body.dark-mode .dc-table th {
+    color: #ffffff;
+    border-bottom: 1px solid #404040;
+}
+
+[data-carbon-theme="g100"] .dc-table th:hover,
+[data-carbon-theme="g90"] .dc-table th:hover,
+body.dark-mode .dc-table th:hover {
+    background-color: #4c4c4c;
+}
+
+[data-carbon-theme="g100"] .dc-table tbody tr,
+[data-carbon-theme="g90"] .dc-table tbody tr,
+body.dark-mode .dc-table tbody tr {
+    border-bottom: 1px solid #404040;
+}
+
+[data-carbon-theme="g100"] .dc-table tbody tr:hover,
+[data-carbon-theme="g90"] .dc-table tbody tr:hover,
+body.dark-mode .dc-table tbody tr:hover {
+    background-color: #4c4c4c;
+}
+
+[data-carbon-theme="g100"] .dc-table td,
+[data-carbon-theme="g90"] .dc-table td,
+body.dark-mode .dc-table td {
+    color: #ffffff;
+}
+
+[data-carbon-theme="g100"] .table-footer,
+[data-carbon-theme="g90"] .table-footer,
+body.dark-mode .table-footer {
+    background-color: #161616;
+    border-top: 1px solid #404040;
+    color: #c6c6c6;
+}
