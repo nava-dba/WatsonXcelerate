@@ -5,9 +5,9 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="PowerVS Scheduled Runs Error Analytics" />
+    <meta name="description" content="IBM Intelligent Log Analyzer - Error Analytics" />
     <meta name="author" content="" />
-    <title>IBM Cloud PowerVS - Error Analytics</title>
+    <title>IBM Intelligent Log Analyzer - Error Analytics</title>
 
     <!-- Carbon -->
     <link rel="stylesheet" href="https://unpkg.com/carbon-components@10.58.0/css/carbon-components.min.css">
@@ -425,7 +425,7 @@
 <body>
 
     <!-- Carbon UI Shell Header -->
-    <header class="bx--header" role="banner" aria-label="IBM Cloud PowerVS Dashboard">
+    <header class="bx--header" role="banner" aria-label="IBM Intelligent Log Analyzer">
         <button class="bx--header__action bx--header__menu-trigger bx--header__menu-toggle bx--side-nav__toggle"
             aria-label="Open menu" title="Open menu" type="button">
             <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
@@ -434,8 +434,7 @@
                 </path>
             </svg>
         </button>
-        <span class="bx--header__name">IBM Cloud</span>
-        <span class="bx--header__name" style="margin-left: 0.5rem; font-weight: 400;">Power Virtual Server</span>
+        <span class="bx--header__name">IBM Intelligent Log Analyzer</span>
     </header>
 
     <!-- Carbon Side Navigation -->
@@ -443,8 +442,21 @@
         <nav class="bx--side-nav__navigation">
             <ul class="bx--side-nav__items">
                 <li class="bx--side-nav__item">
-                    <a class="bx--side-nav__link bx--side-nav__link--current" href="dc_scheduled_runs.html"
-                        aria-current="page">
+                    <a class="bx--side-nav__link" href="index.html">
+                        <div class="bx--side-nav__icon">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+                                viewBox="0 0 32 32" aria-hidden="true">
+                                <path
+                                    d="M16.6123,2.2138a1.01,1.01,0,0,0-1.2427,0L1,13.4194l1.2427,1.5717L4,13.6209V26a2.0041,2.0041,0,0,0,2,2H26a2.0037,2.0037,0,0,0,2-2V13.63L29.7573,15,31,13.4282ZM18,26H14V18h4Zm2,0V18a2.0023,2.0023,0,0,0-2-2H14a2.002,2.002,0,0,0-2,2v8H6V12.0615l10-7.79,10,7.8005V26Z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span class="bx--side-nav__link-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="bx--side-nav__item">
+                    <a class="bx--side-nav__link" href="dc_scheduled_runs.html">
                         <div class="bx--side-nav__icon">
                             <svg focusable="false" preserveAspectRatio="xMidYMid meet"
                                 xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
@@ -455,6 +467,18 @@
                             </svg>
                         </div>
                         <span class="bx--side-nav__link-text">Stability</span>
+                    </a>
+                </li>
+                <li class="bx--side-nav__item">
+                    <a class="bx--side-nav__link bx--side-nav__link--current" href="dc_scheduled_runs_analytics.html" aria-current="page">
+                        <div class="bx--side-nav__icon">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16"
+                                viewBox="0 0 32 32" aria-hidden="true">
+                                <path d="M26 24v-2H6V6H4v18a2 2 0 002 2h20zM8 20l5-5 4 4 5-6 3 3V10l-3 3-5 6-4-4-5 5z"/>
+                            </svg>
+                        </div>
+                        <span class="bx--side-nav__link-text">Analytics</span>
                     </a>
                 </li>
             </ul>
