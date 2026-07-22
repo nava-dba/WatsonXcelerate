@@ -62,6 +62,11 @@
             <div class="chatbot-title">WatsonX Assistant</div>
             <div class="chatbot-subtitle">Powered by IBM watsonx.ai</div>
           </div>
+          <button id="chatbot-clear" aria-label="Clear chat" title="Clear chat">
+            <svg viewBox="0 0 32 32" width="16" height="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12h2v11h-2zm6 0h2v11h-2z"/><path d="M4 6v2h2l2 19a2 2 0 002 2h12a2 2 0 002-2l2-19h2V6zm5.88 21L8.06 8h15.88l-1.82 19zM12 4h8v2h-8z"/>
+            </svg>
+          </button>
           <button id="chatbot-close" aria-label="Close assistant">
             <svg viewBox="0 0 32 32" width="16" height="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path d="M17.41 16l8.29-8.29-1.41-1.41L16 14.59 7.71 6.3 6.3 7.71 14.59 16 6.3 24.29l1.41 1.41L16 17.41l8.29 8.29 1.41-1.41z"/>
@@ -110,6 +115,131 @@
     document.getElementById("chatbot-panel").classList.remove("open");
   }
 
+  function clearChat() {
+    conversationHistory.length = 0;
+    document.getElementById("chatbot-messages").innerHTML = "";
+    appendAssistantMessage(
+      "Hi! I'm your WatsonX assistant. Paste an error message or ask me anything about your infrastructure."
+    );
+  }
+
+  // ── Minimal Markdown renderer ─────────────────────────────────────────────────
+
+  /**
+   * Renders a small safe subset of Markdown to HTML.
+   * Handles: fenced code blocks, inline code, bold, italic, unordered lists, line breaks.
+   * Gracefully handles incomplete tokens that arrive mid-stream (renders them as plain text).
+   * Uses textContent for all user-supplied text to prevent XSS.
+   */
+  function renderMarkdown(text) {
+    const fragment = document.createDocumentFragment();
+
+    // Split on complete fenced code blocks (```...```)
+    // Also detect an unclosed opening ``` so it isn't silently dropped during streaming.
+    const FENCE = "```";
+    const parts = [];
+    let remaining = text;
+
+    while (remaining.length > 0) {
+      const openIdx = remaining.indexOf(FENCE);
+      if (openIdx === -1) {
+        // No fence at all — plain text section
+        parts.push({ type: "text", content: remaining });
+        remaining = "";
+      } else {
+        // Text before the fence
+        if (openIdx > 0) parts.push({ type: "text", content: remaining.slice(0, openIdx) });
+        const afterOpen = remaining.slice(openIdx + 3);
+        const closeIdx = afterOpen.indexOf(FENCE);
+        if (closeIdx === -1) {
+          // Unclosed fence — rest of text is an in-progress code block
+          parts.push({ type: "code", content: afterOpen, open: true });
+          remaining = "";
+        } else {
+          // Complete fenced block
+          parts.push({ type: "code", content: afterOpen.slice(0, closeIdx), open: false });
+          remaining = afterOpen.slice(closeIdx + 3);
+        }
+      }
+    }
+
+    parts.forEach(({ type, content, open }) => {
+      if (type === "code") {
+        // Strip optional language hint on the first line (e.g. ```python\n...)
+        const body = content.replace(/^\w*\n/, "");
+        const pre = document.createElement("pre");
+        const codeEl = document.createElement("code");
+        codeEl.textContent = open ? body + "▌" : body; // cursor hint while streaming
+        pre.appendChild(codeEl);
+        if (open) pre.style.opacity = "0.75"; // visually signal it's still arriving
+        fragment.appendChild(pre);
+        return;
+      }
+
+      // Process inline content line by line
+      const lines = content.split("\n");
+      lines.forEach((line, idx) => {
+        const trimmed = line.trimStart();
+
+        if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+          // Unordered list item
+          const li = document.createElement("li");
+          appendInline(li, trimmed.slice(2));
+          fragment.appendChild(li);
+        } else if (trimmed === "") {
+          // Blank line — paragraph break
+          if (idx > 0) fragment.appendChild(document.createElement("br"));
+        } else {
+          // Regular paragraph line
+          const span = document.createElement("span");
+          appendInline(span, line);
+          fragment.appendChild(span);
+          fragment.appendChild(document.createElement("br"));
+        }
+      });
+    });
+
+    return fragment;
+  }
+
+  /**
+   * Parses inline markdown (bold, italic, inline code) into child nodes of `parent`.
+   * Incomplete tokens at the end (e.g. opening ** without closing **) are rendered as
+   * plain text so they are never silently dropped during streaming.
+   */
+  function appendInline(parent, text) {
+    // Only match COMPLETE tokens — incomplete ones fall through to plain text
+    const tokenRe = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*)/g;
+    let last = 0;
+    let match;
+
+    while ((match = tokenRe.exec(text)) !== null) {
+      if (match.index > last) {
+        parent.appendChild(document.createTextNode(text.slice(last, match.index)));
+      }
+      const token = match[0];
+      if (token.startsWith("`")) {
+        const code = document.createElement("code");
+        code.textContent = token.slice(1, -1);
+        parent.appendChild(code);
+      } else if (token.startsWith("**")) {
+        const strong = document.createElement("strong");
+        strong.textContent = token.slice(2, -2);
+        parent.appendChild(strong);
+      } else {
+        const em = document.createElement("em");
+        em.textContent = token.slice(1, -1);
+        parent.appendChild(em);
+      }
+      last = match.index + token.length;
+    }
+
+    // Remainder — may include incomplete tokens like opening ** mid-stream; render as-is
+    if (last < text.length) {
+      parent.appendChild(document.createTextNode(text.slice(last)));
+    }
+  }
+
   // ── Message rendering ─────────────────────────────────────────────────────────
 
   function appendMessage(role, text) {
@@ -124,7 +254,12 @@
 
     const bubble = document.createElement("div");
     bubble.className = "bubble";
-    bubble.textContent = text;
+
+    if (role === "assistant") {
+      bubble.appendChild(renderMarkdown(text));
+    } else {
+      bubble.textContent = text;
+    }
 
     wrapper.appendChild(label);
     wrapper.appendChild(bubble);
@@ -173,10 +308,6 @@
     const resp = await fetch(IAM_TOKEN_URL, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        grant_type: "urn:ibm:params:oauth:grant-type:apikey",
-        apikey: WATSONX_CONFIG.API_KEY,
-      }),
     });
 
     if (!resp.ok) {
@@ -271,7 +402,8 @@
 
         if (delta) {
           accumulated += delta;
-          streamBubble.textContent = accumulated;
+          streamBubble.innerHTML = "";
+          streamBubble.appendChild(renderMarkdown(accumulated));
           document.getElementById("chatbot-messages").scrollTop =
             document.getElementById("chatbot-messages").scrollHeight;
         }
@@ -347,6 +479,7 @@
 
   function bindEvents() {
     document.getElementById("chatbot-bubble").addEventListener("click", openPanel);
+    document.getElementById("chatbot-clear").addEventListener("click", clearChat);
     document.getElementById("chatbot-close").addEventListener("click", closePanel);
 
     const input = document.getElementById("chatbot-input");
