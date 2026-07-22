@@ -128,28 +128,56 @@
   /**
    * Renders a small safe subset of Markdown to HTML.
    * Handles: fenced code blocks, inline code, bold, italic, unordered lists, line breaks.
+   * Gracefully handles incomplete tokens that arrive mid-stream (renders them as plain text).
    * Uses textContent for all user-supplied text to prevent XSS.
    */
   function renderMarkdown(text) {
     const fragment = document.createDocumentFragment();
 
-    // Split on fenced code blocks (```...```)
-    const parts = text.split(/(```[\s\S]*?```)/g);
+    // Split on complete fenced code blocks (```...```)
+    // Also detect an unclosed opening ``` so it isn't silently dropped during streaming.
+    const FENCE = "```";
+    const parts = [];
+    let remaining = text;
 
-    parts.forEach((part) => {
-      if (part.startsWith("```") && part.endsWith("```")) {
-        // Fenced code block
-        const code = part.slice(3, -3).replace(/^\w*\n/, ""); // strip language hint
+    while (remaining.length > 0) {
+      const openIdx = remaining.indexOf(FENCE);
+      if (openIdx === -1) {
+        // No fence at all — plain text section
+        parts.push({ type: "text", content: remaining });
+        remaining = "";
+      } else {
+        // Text before the fence
+        if (openIdx > 0) parts.push({ type: "text", content: remaining.slice(0, openIdx) });
+        const afterOpen = remaining.slice(openIdx + 3);
+        const closeIdx = afterOpen.indexOf(FENCE);
+        if (closeIdx === -1) {
+          // Unclosed fence — rest of text is an in-progress code block
+          parts.push({ type: "code", content: afterOpen, open: true });
+          remaining = "";
+        } else {
+          // Complete fenced block
+          parts.push({ type: "code", content: afterOpen.slice(0, closeIdx), open: false });
+          remaining = afterOpen.slice(closeIdx + 3);
+        }
+      }
+    }
+
+    parts.forEach(({ type, content, open }) => {
+      if (type === "code") {
+        // Strip optional language hint on the first line (e.g. ```python\n...)
+        const body = content.replace(/^\w*\n/, "");
         const pre = document.createElement("pre");
         const codeEl = document.createElement("code");
-        codeEl.textContent = code;
+        codeEl.textContent = open ? body + "▌" : body; // cursor hint while streaming
         pre.appendChild(codeEl);
+        if (open) pre.style.opacity = "0.75"; // visually signal it's still arriving
         fragment.appendChild(pre);
         return;
       }
 
       // Process inline content line by line
-      const lines = part.split("\n");
+      const lines = content.split("\n");
       lines.forEach((line, idx) => {
         const trimmed = line.trimStart();
 
@@ -176,8 +204,11 @@
 
   /**
    * Parses inline markdown (bold, italic, inline code) into child nodes of `parent`.
+   * Incomplete tokens at the end (e.g. opening ** without closing **) are rendered as
+   * plain text so they are never silently dropped during streaming.
    */
   function appendInline(parent, text) {
+    // Only match COMPLETE tokens — incomplete ones fall through to plain text
     const tokenRe = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*)/g;
     let last = 0;
     let match;
@@ -203,6 +234,7 @@
       last = match.index + token.length;
     }
 
+    // Remainder — may include incomplete tokens like opening ** mid-stream; render as-is
     if (last < text.length) {
       parent.appendChild(document.createTextNode(text.slice(last)));
     }
