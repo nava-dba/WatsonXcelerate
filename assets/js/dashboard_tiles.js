@@ -32,10 +32,11 @@ async function loadCategoriesConfig() {
 }
 
 /**
- * Extract date from run data
+ * Extract date from run data (plain string "YYYY-MM-DD" or legacy HTML anchor)
  */
 function extractDate(dateString) {
-    const match = dateString.match(/>([\d-]+)</);
+    if (!dateString) return null;
+    const match = String(dateString).match(/(\d{4}-\d{2}-\d{2})/);
     return match ? match[1] : null;
 }
 
