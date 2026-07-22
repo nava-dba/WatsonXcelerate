@@ -36,6 +36,12 @@
   let iamToken = null;
   let iamTokenExpiry = 0; // Unix ms
 
+  /** Attached log file content (null when no file is attached) */
+  let attachedLogContent = null;
+  let attachedLogName = null;
+
+  const MAX_FILE_BYTES = 512 * 1024; // 500 KB
+
   // ── DOM helpers ───────────────────────────────────────────────────────────────
 
   function injectHTML() {
@@ -79,17 +85,31 @@
 
         <!-- Input row -->
         <div id="chatbot-input-row">
-          <textarea
-            id="chatbot-input"
-            rows="1"
-            placeholder="Describe an error or ask a question…"
-            aria-label="Chat input"
-          ></textarea>
-          <button id="chatbot-send" aria-label="Send message">
-            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M27.45 15.11l-22-11a1 1 0 00-1.08.12 1 1 0 00-.27 1L7 16 4.1 26.77A1 1 0 005 28a1 1 0 00.45-.11l22-11a1 1 0 000-1.78zM6.2 25.37L8.6 16.8H18v-1.6H8.6L6.2 6.63 24.76 16z"/>
-            </svg>
-          </button>
+          <!-- File chip shown when a log file is attached -->
+          <div id="chatbot-file-chip">
+            <span id="chatbot-file-name"></span>
+            <button id="chatbot-file-remove" aria-label="Remove attached file" title="Remove file">✕</button>
+          </div>
+          <div id="chatbot-input-controls">
+            <!-- Hidden native file picker -->
+            <input type="file" id="chatbot-file-input" accept=".log,.txt,.json,.out,.csv" aria-label="Upload log file" tabindex="-1" />
+            <button id="chatbot-upload" aria-label="Attach log file" title="Attach log file (.log .txt .json)">
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="18" height="18" fill="currentColor">
+                <path d="M28 18v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8h2v8h20v-8zM16 4l-6 6 1.41 1.41L15 7.83V22h2V7.83l3.59 3.58L22 10z"/>
+              </svg>
+            </button>
+            <textarea
+              id="chatbot-input"
+              rows="1"
+              placeholder="Describe an error or ask a question…"
+              aria-label="Chat input"
+            ></textarea>
+            <button id="chatbot-send" aria-label="Send message">
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M27.45 15.11l-22-11a1 1 0 00-1.08.12 1 1 0 00-.27 1L7 16 4.1 26.77A1 1 0 005 28a1 1 0 00.45-.11l22-11a1 1 0 000-1.78zM6.2 25.37L8.6 16.8H18v-1.6H8.6L6.2 6.63 24.76 16z"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
       </div>
@@ -121,6 +141,43 @@
     appendAssistantMessage(
       "Hi! I'm your WatsonX assistant. Paste an error message or ask me anything about your infrastructure."
     );
+  }
+
+  // ── Log file upload ───────────────────────────────────────────────────────────
+
+  function showFileChip(name) {
+    document.getElementById("chatbot-file-name").textContent = name;
+    document.getElementById("chatbot-file-chip").classList.add("visible");
+    document.getElementById("chatbot-input").placeholder = "Ask a question about the log…";
+  }
+
+  function removeFile() {
+    attachedLogContent = null;
+    attachedLogName = null;
+    document.getElementById("chatbot-file-chip").classList.remove("visible");
+    document.getElementById("chatbot-file-input").value = "";
+    document.getElementById("chatbot-input").placeholder = "Describe an error or ask a question…";
+  }
+
+  function handleFileSelect(file) {
+    if (!file) return;
+
+    if (file.size > MAX_FILE_BYTES) {
+      appendAssistantMessage(
+        `⚠️ File too large: **${file.name}** is ${(file.size / 1024).toFixed(0)} KB. Maximum allowed is 500 KB.`
+      );
+      document.getElementById("chatbot-file-input").value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      attachedLogContent = e.target.result;
+      attachedLogName = file.name;
+      showFileChip(file.name);
+      document.getElementById("chatbot-input").focus();
+    };
+    reader.readAsText(file);
   }
 
   // ── Minimal Markdown renderer ─────────────────────────────────────────────────
@@ -419,11 +476,26 @@
     const inputEl = document.getElementById("chatbot-input");
     const sendBtn = document.getElementById("chatbot-send");
     const text = inputEl.value.trim();
-    if (!text) return;
+    if (!text && !attachedLogContent) return;
+
+    // Build message: if a log file is attached, prepend it to the user message
+    let userContent = text;
+    let displayText = text;
+    if (attachedLogContent) {
+      const prompt = text || "Analyse this log and summarise any errors or issues.";
+      displayText = text
+        ? `📎 **${attachedLogName}** — ${text}`
+        : `📎 **${attachedLogName}** — Analyse this log`;
+      userContent =
+        `The user has uploaded a log file named "${attachedLogName}".\n\n` +
+        `Log contents:\n\`\`\`\n${attachedLogContent}\n\`\`\`\n\n` +
+        `User question: ${prompt}`;
+      removeFile(); // clear chip after attaching to message
+    }
 
     // Render user message
-    appendMessage("user", text);
-    conversationHistory.push({ role: "user", content: text });
+    appendMessage("user", displayText);
+    conversationHistory.push({ role: "user", content: userContent });
     inputEl.value = "";
     autoResizeTextarea(inputEl);
 
@@ -481,6 +553,15 @@
     document.getElementById("chatbot-bubble").addEventListener("click", openPanel);
     document.getElementById("chatbot-clear").addEventListener("click", clearChat);
     document.getElementById("chatbot-close").addEventListener("click", closePanel);
+
+    // File upload
+    document.getElementById("chatbot-upload").addEventListener("click", () => {
+      document.getElementById("chatbot-file-input").click();
+    });
+    document.getElementById("chatbot-file-input").addEventListener("change", (e) => {
+      handleFileSelect(e.target.files[0]);
+    });
+    document.getElementById("chatbot-file-remove").addEventListener("click", removeFile);
 
     const input = document.getElementById("chatbot-input");
     input.addEventListener("input", () => autoResizeTextarea(input));
