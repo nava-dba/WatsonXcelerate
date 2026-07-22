@@ -105,6 +105,7 @@
   opacity: 0.85;
 }
 
+#chatbot-clear,
 #chatbot-close {
   background: none;
   border: none;
@@ -115,6 +116,7 @@
   border-radius: 2px;
 }
 
+#chatbot-clear:hover,
 #chatbot-close:hover {
   background: rgba(255, 255, 255, 0.15);
 }
@@ -153,7 +155,39 @@
   border-radius: 4px;
   line-height: 1.55;
   font-size: 14.5px;
-  white-space: pre-wrap;
+}
+
+/* Markdown elements inside assistant bubbles */
+.chat-msg.assistant .bubble pre {
+  background: var(--nav-bg-primary, #f4f4f4);
+  border: 1px solid var(--nav-border, #e0e0e0);
+  border-radius: 4px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  font-size: 13px;
+  margin: 6px 0;
+  white-space: pre;
+}
+
+.chat-msg.assistant .bubble code {
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 13px;
+  background: var(--nav-bg-primary, #f4f4f4);
+  border: 1px solid var(--nav-border, #e0e0e0);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+.chat-msg.assistant .bubble pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.chat-msg.assistant .bubble li {
+  margin-left: 18px;
+  margin-bottom: 2px;
+  list-style-type: disc;
 }
 
 .chat-msg.user .bubble {
@@ -256,4 +290,6 @@
   #chatbot-send:hover { background: #a6c8ff; }
   #chatbot-send svg { fill: #161616; }
   #chatbot-bubble svg { fill: #161616; }
+  .chat-msg.assistant .bubble pre,
+  .chat-msg.assistant .bubble code { background: #2d2d2d; border-color: #444; }
 }
