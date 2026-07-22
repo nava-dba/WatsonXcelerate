@@ -1269,17 +1269,19 @@ def get_schematics_run_logs(
     analyse each log for errors using the existing LLM pipeline.
 
     Replaces get_github_run_logs() — no GitHub dependency.
-    Produces the same dc_scheduled_runs.json record shape:
-        Run_Number, Date, DC, OS, Repo, Error
+    Produces the dc_scheduled_runs.json record shape:
+        Date, workspacename, Repo, Version, Error
+    (action_id is tracked internally under "_action_id" for dedup only —
+    it is not written out as a user-facing field.)
     """
     print(f"\n{'='*80}\nSTARTING SCHEMATICS FETCH PROCESS\n{'='*80}")
     print(f"Output JSON file: {json_file}")
 
     logs_summary: List[Dict[str, Any]] = []
     existing_runs = load_existing_runs(json_file)
-    # Use action_id as the deduplication key (equivalent to GitHub run_number)
+    # Use action_id as the deduplication key
     existing_action_ids = {
-        str(item.get("Run_Number")) for item in existing_runs if "Run_Number" in item
+        str(item.get("_action_id")) for item in existing_runs if "_action_id" in item
     }
 
     try:
@@ -1311,6 +1313,8 @@ def get_schematics_run_logs(
             action_type  = entry["action_type"]
             performed_at = entry["performed_at"]
             log_text     = entry["log_text"]
+            catalog_variation = entry.get("catalog_variation", "Unknown")
+            catalog_version   = entry.get("catalog_version", "Unknown")
 
             print(f"\n--- Processing {idx}/{len(log_entries)}: '{ws_name}' action={action_id} ---")
             print(f"  Type={action_type}, performed_at={performed_at}, log={len(log_text):,} chars")
@@ -1325,32 +1329,29 @@ def get_schematics_run_logs(
                 except ValueError:
                     job_started_date = performed_at
 
-            # Derive DC from workspace name (first segment before "-" or full name)
-            job_location = ws_name.split("-")[0] if "-" in ws_name else ws_name
+            # Use the full workspace name as the workspacename field
+            workspace_name = ws_name
 
-            # Schematics workspaces don't have an OS field — default to "Unknown"
-            job_os = "Unknown"
-
-            # Use workspace name as the Repo/variation equivalent
-            variation_name = ws_name
-
-            print(f"  Metadata: DC={job_location}, OS={job_os}, Repo={variation_name}, Date={job_started_date}")
+            print(
+                f"  Metadata: workspacename={workspace_name}, Repo={catalog_variation}, "
+                f"Version={catalog_version}, Date={job_started_date}"
+            )
 
             error_object = analyze_job_log_errors(log_text, llm_apikey)
 
             data = {
-                "Run_Number": action_id,
                 "Date": job_started_date,
-                "DC": job_location,
-                "OS": job_os,
-                "Repo": variation_name,
+                "workspacename": workspace_name,
+                "Repo": catalog_variation,
+                "Version": catalog_version,
                 "Error": error_object,
+                "_action_id": action_id,
             }
             logs_summary.append(data)
 
             print(
                 f"  ✓ RESULT: action={action_id}, Date={job_started_date}, "
-                f"DC={job_location}, Errors={error_object['errorCount']} "
+                f"workspacename={workspace_name}, Errors={error_object['errorCount']} "
                 f"categories={', '.join(error_object['categories'])}"
             )
 

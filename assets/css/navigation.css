@@ -437,6 +437,24 @@ body {
     color: var(--content-text) !important;
 }
 
+/* Fixed column widths so long workspace/variation/version values
+   truncate instead of colliding with neighboring columns */
+.dc-table {
+    table-layout: fixed;
+}
+
+.dc-table col.col-date { width: 12%; }
+.dc-table col.col-workspace { width: 20%; }
+.dc-table col.col-variation { width: 18%; }
+.dc-table col.col-version { width: 12%; }
+.dc-table col.col-errors { width: 38%; }
+
+.dc-table td.cell-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* Table Footer */
 .table-footer {
     background-color: var(--page-bg) !important;

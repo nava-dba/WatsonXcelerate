@@ -5,9 +5,9 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <meta name="description" content="PowerVS Scheduled Runs Stability" />
+  <meta name="description" content="IBM Intelligent Log Analyzer - Scheduled Runs Stability" />
   <meta name="author" content="" />
-  <title>IBM Cloud PowerVS - Scheduled Runs Stability</title>
+  <title>IBM Intelligent Log Analyzer - Scheduled Runs Stability</title>
 
   <!-- Carbon -->
   <link rel="stylesheet" href="https://unpkg.com/carbon-components@10.58.0/css/carbon-components.min.css">
@@ -523,7 +523,7 @@
 <body>
 
   <!-- Carbon UI Shell Header -->
-  <header class="bx--header" role="banner" aria-label="IBM Cloud PowerVS Dashboard">
+  <header class="bx--header" role="banner" aria-label="IBM Intelligent Log Analyzer">
     <button class="bx--header__action bx--header__menu-trigger bx--header__menu-toggle bx--side-nav__toggle"
       aria-label="Open menu" title="Open menu" type="button">
       <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -531,8 +531,7 @@
         <path d="M2 14.8H18V16H2zM2 11.2H18V12.399999999999999H2zM2 7.6H18V8.799999999999999H2zM2 4H18V5.2H2z"></path>
       </svg>
     </button>
-    <span class="bx--header__name">IBM Cloud</span>
-    <span class="bx--header__name" style="margin-left: 0.5rem; font-weight: 400;">Power Virtual Server</span>
+    <span class="bx--header__name">IBM Intelligent Log Analyzer</span>
   </header>
 
   <!-- Carbon Side Navigation -->
@@ -565,6 +564,17 @@
             <span class="bx--side-nav__link-text">Stability</span>
           </a>
         </li>
+        <li class="bx--side-nav__item">
+          <a class="bx--side-nav__link" href="dc_scheduled_runs_analytics.html">
+            <div class="bx--side-nav__icon">
+              <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">
+                <path d="M26 24v-2H6V6H4v18a2 2 0 002 2h20zM8 20l5-5 4 4 5-6 3 3V10l-3 3-5 6-4-4-5 5z"/>
+              </svg>
+            </div>
+            <span class="bx--side-nav__link-text">Analytics</span>
+          </a>
+        </li>
 
       </ul>
     </nav>
@@ -577,7 +587,7 @@
       <div class="page-header">
         <h1>Scheduled runs stability</h1>
         <p>
-          End-to-end scheduled deployable architectures runs and errors across PowerVS datacenters.
+          End-to-end scheduled deployable architectures runs and errors across datacenters.
         </p>
         <p id="last-updated" style="font-size: 0.875rem; color: #525252; margin-top: 0.5rem;">Loading...</p>
       </div>
@@ -624,12 +634,19 @@
       </div>
 
       <table id="dataTableStatus" class="bx--data-table dc-table" style="width:100%;">
+        <colgroup>
+          <col class="col-date">
+          <col class="col-workspace">
+          <col class="col-variation">
+          <col class="col-version">
+          <col class="col-errors">
+        </colgroup>
         <thead>
           <tr>
             <th class="sortable" data-sort="date">Date</th>
-            <th class="sortable" data-sort="zone">Zone</th>
-            <th class="sortable" data-sort="os">PowerVS Image</th>
+            <th class="sortable" data-sort="workspace">Workspace</th>
             <th class="sortable" data-sort="repo">Variation</th>
+            <th class="sortable" data-sort="version">Version</th>
             <th>Errors</th>
           </tr>
         </thead>

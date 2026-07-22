@@ -32,10 +32,11 @@ async function loadCategoriesConfig() {
 }
 
 /**
- * Extract date from run data
+ * Extract date from run data (plain string "YYYY-MM-DD" or legacy HTML anchor)
  */
 function extractDate(dateString) {
-    const match = dateString.match(/>([\d-]+)</);
+    if (!dateString) return null;
+    const match = String(dateString).match(/(\d{4}-\d{2}-\d{2})/);
     return match ? match[1] : null;
 }
 
@@ -167,7 +168,7 @@ function getRecentErrors(data) {
     });
 
     return sortedData.slice(0, 5).map(run => ({
-        dc: run.DC,
+        dc: run.workspacename,
         date: extractDate(run.Date) || 'N/A',
         errorCount: run.Error?.errorCount || 0,
         topCategory: run.Error?.categories?.[0] || 'Unknown'
@@ -213,12 +214,6 @@ async function initDashboardTiles() {
         const totalElement = document.getElementById('total-errors');
         if (totalElement) {
             totalElement.textContent = totalErrors;
-        }
-
-        // Update period label
-        const monthElement = document.getElementById('error-month');
-        if (monthElement) {
-            monthElement.textContent = 'Last 30 Days';
         }
 
         // Update total runs count (all runs)
