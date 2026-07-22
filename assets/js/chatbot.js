@@ -388,21 +388,14 @@
   // ── WatsonX chat API call ─────────────────────────────────────────────────────
 
   /**
-   * Send the full conversation to watsonx.ai /ml/v1/text/chat and stream the
-   * response back, updating `streamBubble` progressively.
-   *
-   * @param {HTMLElement} streamBubble  - DOM element to stream text into
+   * Low-level: POST an explicit messages array to watsonx.ai and stream back into streamBubble.
+   * Does NOT touch conversationHistory — callers manage context themselves.
    */
-  async function callWatsonX(streamBubble) {
+  async function callWatsonXWithMessages(messages, streamBubble, maxTokens) {
     const token = await getIamToken();
     const endpoint = WATSONX_CONFIG.PROXY
       ? "/proxy/watsonx"
       : `${WATSONX_CONFIG.URL}/ml/v1/text/chat?version=2024-05-01`;
-
-    const messages = [
-      { role: "system", content: SYSTEM_PROMPT },
-      ...conversationHistory,
-    ];
 
     const resp = await fetch(endpoint, {
       method: "POST",
@@ -415,7 +408,7 @@
         project_id: WATSONX_CONFIG.PROJECT_ID,
         messages,
         parameters: {
-          max_new_tokens: 2048,
+          max_new_tokens: maxTokens || 2048,
           temperature: 0.3,
         },
         stream: true,
@@ -476,6 +469,55 @@
     return accumulated;
   }
 
+  /**
+   * High-level: send the current conversationHistory to watsonx and stream into streamBubble.
+   */
+  async function callWatsonX(streamBubble) {
+    const messages = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...conversationHistory,
+    ];
+    return callWatsonXWithMessages(messages, streamBubble, 2048);
+  }
+
+  /**
+   * Silent (non-streaming) single call — returns the full text response.
+   * Used to summarise individual log chunks without a visible bubble.
+   */
+  async function callWatsonXSilent(messages) {
+    const token = await getIamToken();
+    const endpoint = WATSONX_CONFIG.PROXY
+      ? "/proxy/watsonx"
+      : `${WATSONX_CONFIG.URL}/ml/v1/text/chat?version=2024-05-01`;
+
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        model_id: WATSONX_CONFIG.MODEL_ID,
+        project_id: WATSONX_CONFIG.PROJECT_ID,
+        messages,
+        parameters: { max_new_tokens: 512, temperature: 0.2 },
+        stream: false,
+      }),
+    });
+
+    if (!resp.ok) {
+      const err = await resp.text();
+      throw new Error(`watsonx API error (${resp.status}): ${err}`);
+    }
+
+    const data = await resp.json();
+    return (
+      data?.choices?.[0]?.message?.content ??
+      data?.results?.[0]?.generated_text ??
+      ""
+    );
+  }
+
   // ── Send message handler ──────────────────────────────────────────────────────
 
   async function handleSend() {
@@ -508,33 +550,73 @@
       const total = chunks.length;
 
       try {
+        let finalUserMessage;
+
         if (total === 1) {
-          // Single chunk — send directly as one user message
-          conversationHistory.push({
-            role: "user",
-            content:
-              `Log file: "${logName}"\n\nLog contents:\n\`\`\`\n${chunks[0]}\n\`\`\`\n\nUser question: ${userPrompt}`,
-          });
+          // Small log — send as a single self-contained call
+          finalUserMessage =
+            `Log file: "${logName}"\n\nLog contents:\n\`\`\`\n${chunks[0]}\n\`\`\`\n\nUser question: ${userPrompt}`;
         } else {
-          // Multi-chunk: feed each chunk silently, then ask the question
+          // Large log — summarise each chunk independently, then combine
+          // This keeps every API call well within the context window.
+          const summaries = [];
+
           for (let i = 0; i < total; i++) {
-            const partMsg = `Log file: "${logName}" — part ${i + 1} of ${total}:\n\`\`\`\n${chunks[i]}\n\`\`\``;
-            conversationHistory.push({ role: "user", content: partMsg });
+            // Update progress in the last progress bubble or add a new one
+            const progressId = "chatbot-log-progress";
+            let progressBubble = document.getElementById(progressId);
+            if (!progressBubble) {
+              const w = document.createElement("div");
+              w.className = "chat-msg assistant";
+              const lbl = document.createElement("div");
+              lbl.className = "msg-label";
+              lbl.textContent = "WatsonX";
+              progressBubble = document.createElement("div");
+              progressBubble.className = "bubble";
+              progressBubble.id = progressId;
+              w.appendChild(lbl);
+              w.appendChild(progressBubble);
+              document.getElementById("chatbot-messages").appendChild(w);
+            }
+            progressBubble.textContent =
+              `Summarising ${logName} — part ${i + 1} / ${total}…`;
+            document.getElementById("chatbot-messages").scrollTop =
+              document.getElementById("chatbot-messages").scrollHeight;
 
-            // Show a progress bubble
-            appendAssistantMessage(`📄 Ingesting **${logName}** — part ${i + 1} / ${total}…`);
+            const chunkMessages = [
+              {
+                role: "system",
+                content:
+                  "You are a log analysis assistant. Summarise the following log segment " +
+                  "concisely, noting any errors, warnings, or anomalies. Be brief.",
+              },
+              {
+                role: "user",
+                content: `Log file: "${logName}" — part ${i + 1} of ${total}:\n\`\`\`\n${chunks[i]}\n\`\`\``,
+              },
+            ];
 
-            // Acknowledge each chunk (cheap call, no streaming needed for ack)
-            conversationHistory.push({
-              role: "assistant",
-              content: `Received part ${i + 1} of ${total}. Continue.`,
-            });
+            const summary = await callWatsonXSilent(chunkMessages);
+            summaries.push(`### Part ${i + 1} / ${total}\n${summary}`);
           }
-          // Final turn: ask the actual question
-          conversationHistory.push({ role: "user", content: `User question about the log above: ${userPrompt}` });
+
+          // Remove the progress bubble
+          const pb = document.getElementById("chatbot-log-progress");
+          if (pb) pb.closest(".chat-msg").remove();
+
+          // Build a combined summary prompt
+          finalUserMessage =
+            `Log file: "${logName}" was split into ${total} parts. ` +
+            `Here are the summaries of each part:\n\n${summaries.join("\n\n")}\n\n` +
+            `Based on ALL parts above, answer this question: ${userPrompt}`;
         }
 
-        // Stream the final answer
+        // Stream the final answer using a fresh isolated context (no history bloat)
+        const finalMessages = [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user",   content: finalUserMessage },
+        ];
+
         const msgList = document.getElementById("chatbot-messages");
         const wrapper  = document.createElement("div");
         wrapper.className = "chat-msg assistant";
@@ -548,11 +630,13 @@
         msgList.appendChild(wrapper);
         msgList.scrollTop = msgList.scrollHeight;
 
-        const fullReply = await callWatsonX(bubble);
+        const fullReply = await callWatsonXWithMessages(finalMessages, bubble, 2048);
 
         if (!fullReply) {
           bubble.textContent = "(No response received — please try again.)";
         }
+        // Store a compact summary in history so follow-up questions work
+        conversationHistory.push({ role: "user",      content: `[Analysed log: ${logName}] ${userPrompt}` });
         conversationHistory.push({ role: "assistant", content: fullReply });
       } catch (err) {
         appendAssistantMessage(
