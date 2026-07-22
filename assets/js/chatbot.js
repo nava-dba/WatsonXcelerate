@@ -40,7 +40,8 @@
   let attachedLogContent = null;
   let attachedLogName = null;
 
-  const MAX_FILE_BYTES = 512 * 1024; // 500 KB
+  const MAX_FILE_BYTES = 2 * 1024 * 1024; // 2 MB
+  const CHUNK_CHARS    = 6000;             // ~1500 tokens per chunk
 
   // ── DOM helpers ───────────────────────────────────────────────────────────────
 
@@ -164,7 +165,7 @@
 
     if (file.size > MAX_FILE_BYTES) {
       appendAssistantMessage(
-        `⚠️ File too large: **${file.name}** is ${(file.size / 1024).toFixed(0)} KB. Maximum allowed is 500 KB.`
+        `⚠️ File too large: **${file.name}** is ${(file.size / 1024).toFixed(0)} KB. Maximum allowed is 2 MB.`
       );
       document.getElementById("chatbot-file-input").value = "";
       return;
@@ -174,7 +175,12 @@
     reader.onload = (e) => {
       attachedLogContent = e.target.result;
       attachedLogName = file.name;
-      showFileChip(file.name);
+      const sizeKB = (file.size / 1024).toFixed(0);
+      const chunks = Math.ceil(attachedLogContent.length / CHUNK_CHARS);
+      const hint = chunks > 1
+        ? `${sizeKB} KB · will be analysed in ${chunks} parts`
+        : `${sizeKB} KB`;
+      showFileChip(`${file.name}  (${hint})`);
       document.getElementById("chatbot-input").focus();
     };
     reader.readAsText(file);
@@ -409,7 +415,7 @@
         project_id: WATSONX_CONFIG.PROJECT_ID,
         messages,
         parameters: {
-          max_new_tokens: 1024,
+          max_new_tokens: 2048,
           temperature: 0.3,
         },
         stream: true,
@@ -478,23 +484,91 @@
     const text = inputEl.value.trim();
     if (!text && !attachedLogContent) return;
 
-    // Build message: if a log file is attached, prepend it to the user message
-    let userContent = text;
-    let displayText = text;
+    // ── If a log file is attached, use chunked analysis ──────────────────────────
     if (attachedLogContent) {
-      const prompt = text || "Analyse this log and summarise any errors or issues.";
-      displayText = text
-        ? `📎 **${attachedLogName}** — ${text}`
-        : `📎 **${attachedLogName}** — Analyse this log`;
-      userContent =
-        `The user has uploaded a log file named "${attachedLogName}".\n\n` +
-        `Log contents:\n\`\`\`\n${attachedLogContent}\n\`\`\`\n\n` +
-        `User question: ${prompt}`;
-      removeFile(); // clear chip after attaching to message
+      const logContent  = attachedLogContent;
+      const logName     = attachedLogName;
+      const userPrompt  = text || "Analyse this log and summarise any errors or issues.";
+      const displayText = text
+        ? `📎 **${logName}** — ${text}`
+        : `📎 **${logName}** — Analyse this log`;
+
+      removeFile();
+      inputEl.value = "";
+      autoResizeTextarea(inputEl);
+      sendBtn.disabled = true;
+
+      appendMessage("user", displayText);
+
+      // Split log into chunks
+      const chunks = [];
+      for (let i = 0; i < logContent.length; i += CHUNK_CHARS) {
+        chunks.push(logContent.slice(i, i + CHUNK_CHARS));
+      }
+      const total = chunks.length;
+
+      try {
+        if (total === 1) {
+          // Single chunk — send directly as one user message
+          conversationHistory.push({
+            role: "user",
+            content:
+              `Log file: "${logName}"\n\nLog contents:\n\`\`\`\n${chunks[0]}\n\`\`\`\n\nUser question: ${userPrompt}`,
+          });
+        } else {
+          // Multi-chunk: feed each chunk silently, then ask the question
+          for (let i = 0; i < total; i++) {
+            const partMsg = `Log file: "${logName}" — part ${i + 1} of ${total}:\n\`\`\`\n${chunks[i]}\n\`\`\``;
+            conversationHistory.push({ role: "user", content: partMsg });
+
+            // Show a progress bubble
+            appendAssistantMessage(`📄 Ingesting **${logName}** — part ${i + 1} / ${total}…`);
+
+            // Acknowledge each chunk (cheap call, no streaming needed for ack)
+            conversationHistory.push({
+              role: "assistant",
+              content: `Received part ${i + 1} of ${total}. Continue.`,
+            });
+          }
+          // Final turn: ask the actual question
+          conversationHistory.push({ role: "user", content: `User question about the log above: ${userPrompt}` });
+        }
+
+        // Stream the final answer
+        const msgList = document.getElementById("chatbot-messages");
+        const wrapper  = document.createElement("div");
+        wrapper.className = "chat-msg assistant";
+        const label    = document.createElement("div");
+        label.className = "msg-label";
+        label.textContent = "WatsonX";
+        const bubble   = document.createElement("div");
+        bubble.className = "bubble";
+        wrapper.appendChild(label);
+        wrapper.appendChild(bubble);
+        msgList.appendChild(wrapper);
+        msgList.scrollTop = msgList.scrollHeight;
+
+        const fullReply = await callWatsonX(bubble);
+
+        if (!fullReply) {
+          bubble.textContent = "(No response received — please try again.)";
+        }
+        conversationHistory.push({ role: "assistant", content: fullReply });
+      } catch (err) {
+        appendAssistantMessage(
+          `⚠️ Error: ${err.message || "Could not reach WatsonX. Check your API key and network."}`
+        );
+        console.error("[chatbot]", err);
+      } finally {
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }
+      return;
     }
 
-    // Render user message
-    appendMessage("user", displayText);
+    // ── Normal text-only message ──────────────────────────────────────────────────
+    const userContent = text;
+    appendMessage("user", userContent);
     conversationHistory.push({ role: "user", content: userContent });
     inputEl.value = "";
     autoResizeTextarea(inputEl);
@@ -503,7 +577,6 @@
     appendTypingIndicator();
 
     try {
-      // Insert placeholder assistant bubble for streaming
       removeTypingIndicator();
       const msgList = document.getElementById("chatbot-messages");
       const wrapper = document.createElement("div");
