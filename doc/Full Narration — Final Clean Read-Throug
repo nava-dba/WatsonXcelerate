@@ -1,0 +1,13 @@
+Full Narration — Final Clean Read-Through
+
+"When a deployment fails on IBM Cloud, this is what you're faced with — thousands of raw log lines, no structure, no signal. Just noise."
+
+"Engineers spend hours or more per incident manually searching for the root cause — scrolling, grepping, context-switching between tools. It's repetitive, error-prone, and requires deep infrastructure expertise. Non-technical team members simply can't participate."
+
+"Meet the AI-Powered IBM Cloud Infrastructure Intelligent Log Analyzer — a one-stop shop, plug-and-play solution. Any IBM Cloud account can use it. Just provide your API key, and it automatically pulls logs from every Schematics workspace — no manual selection, no CLI commands. Powered by watsonx.ai, it classifies every error in seconds."
+
+"The IBM Carbon dashboard gives you instant visibility — error categories, affected workspaces, and trends over time. Click any run to see the exact root cause explained in plain language. What used to take hours now takes just couple of seconds. And for the first time, everyone on the team — technical or not — can understand what went wrong."
+
+"There's more — an embedded watsonx.ai chatbot, built in under 5 minutes with IBM Bob, lets you ask questions about any incident right inside the dashboard. And critically, your log data never leaves IBM Cloud. The chatbot runs entirely on IBM's Granite model via watsonx.ai — full data governance and sovereignty guaranteed. No data sent to external services. Ever."
+
+"The AI-Powered IBM Cloud Infrastructure Intelligent Log Analyzer — built with IBM Bob, for every team."

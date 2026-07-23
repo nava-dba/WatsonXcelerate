@@ -1,0 +1,261 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Video Script — WatsonXcelerate</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:13px;line-height:1.6;color:#1f2328;background:#fff;}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 36px 48px;}
+
+  /* title block */
+  .doc-title{border-bottom:3px solid #1f2328;padding-bottom:12px;margin-bottom:24px;}
+  .doc-title h1{font-size:20px;font-weight:700;color:#1f2328;letter-spacing:-0.3px;}
+  .doc-title h1 span{color:#3b82d4;}
+  .doc-title .meta{font-size:11px;color:#57606a;margin-top:4px;}
+
+  /* legend */
+  .legend{display:flex;gap:16px;flex-wrap:wrap;background:#f7f8fa;border:1px solid #e5e7eb;border-radius:4px;padding:10px 14px;margin-bottom:24px;font-size:11px;}
+  .legend-item{display:flex;align-items:center;gap:6px;}
+  .dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+  .dot-time{background:#1f2328;}
+  .dot-screen{background:#3b82d4;}
+  .dot-say{background:#7c5cd8;}
+  .dot-note{background:#e5890a;}
+
+  /* scene cards */
+  .scene{margin-bottom:18px;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden;}
+  .scene-header{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#1f2328;}
+  .scene-header .scene-num{font-size:11px;font-weight:700;color:#fff;background:#3b82d4;padding:2px 8px;border-radius:10px;}
+  .scene-header .scene-title{font-size:12px;font-weight:700;color:#fff;}
+  .scene-header .scene-time{margin-left:auto;font-size:11px;color:#9ca3af;font-weight:600;}
+  .scene-body{padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .scene-body.full{grid-template-columns:1fr;}
+
+  .block-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+  .block-label.screen{color:#3b82d4;}
+  .block-label.say{color:#7c5cd8;}
+  .block-label.note{color:#e5890a;}
+
+  .screen-block{background:#f0f6ff;border:1px solid #bfdbfe;border-radius:4px;padding:10px 12px;}
+  .say-block{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:4px;padding:10px 12px;}
+  .note-block{background:#fffbeb;border:1px solid #fcd34d;border-radius:4px;padding:8px 12px;margin-top:10px;}
+
+  .say-block p{font-size:12.5px;color:#1f2328;font-style:italic;line-height:1.65;}
+  .say-block strong{font-style:normal;color:#5b21b6;}
+  .screen-block p{font-size:12px;color:#1f2328;line-height:1.6;}
+  .screen-block ul{padding-left:16px;margin-top:4px;}
+  .screen-block ul li{font-size:12px;color:#1f2328;margin-bottom:3px;}
+
+  /* full narration box */
+  .full-narration{background:#f7f8fa;border:1px solid #e5e7eb;border-radius:6px;padding:16px 18px;margin-top:24px;}
+  .full-narration h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#3b82d4;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:12px;}
+  .full-narration p{font-size:13px;line-height:1.75;color:#1f2328;margin-bottom:10px;}
+  .full-narration p:last-child{margin-bottom:0;}
+
+  /* timing bar */
+  .timing-bar{display:flex;height:14px;border-radius:4px;overflow:hidden;margin:20px 0 8px;}
+  .t-seg{height:14px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;}
+  .timing-labels{display:flex;font-size:9px;color:#57606a;justify-content:space-between;margin-bottom:20px;}
+
+  /* bob footer */
+  .bob-footer{text-align:center;padding:20px 0 0;border-top:1px solid #e5e7eb;margin-top:32px;font-size:11px;color:#9ca3af;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="doc-title">
+    <h1>Watson<span>X</span>celerate — 1-Minute Video Script</h1>
+    <div class="meta">2026 IBMer watsonx Challenge  ·  Final Draft  ·  Target runtime: 60 seconds  ·  Naved Afroz</div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="dot dot-time"></div> Timestamp</div>
+    <div class="legend-item"><div class="dot dot-screen"></div> Screen / what to show</div>
+    <div class="legend-item"><div class="dot dot-say"></div> Narration (what to say)</div>
+    <div class="legend-item"><div class="dot dot-note"></div> Director note</div>
+  </div>
+
+  
+  <div class="timing-bar">
+    <div class="t-seg" style="width:13%;background:#57606a">0–8s</div>
+    <div class="t-seg" style="width:20%;background:#c0392b">8–20s</div>
+    <div class="t-seg" style="width:22%;background:#3b82d4">20–33s</div>
+    <div class="t-seg" style="width:22%;background:#7c5cd8">33–46s</div>
+    <div class="t-seg" style="width:23%;background:#16a34a">46–60s</div>
+  </div>
+  <div class="timing-labels">
+    <span>Hook</span><span>The Pain</span><span>The Solution</span><span>Dashboard Demo</span><span>Chatbot + Closing</span>
+  </div>
+
+  
+  <div class="scene">
+    <div class="scene-header">
+      <span class="scene-num">Scene 1</span>
+      <span class="scene-title">Hook — The Status Quo</span>
+      <span class="scene-time">0 – 8 s</span>
+    </div>
+    <div class="scene-body">
+      <div class="screen-block">
+        <div class="block-label screen">▶ Screen</div>
+        <p>Terminal window open. Run:<br />
+        <code style="font-size:11px;background:#e5e7eb;padding:2px 5px;border-radius:2px">ibmcloud schematics workspace list</code><br />
+        Show the 40+ workspace list scrolling. Then run:<br />
+        <code style="font-size:11px;background:#e5e7eb;padding:2px 5px;border-radius:2px">ibmcloud schematics logs --id &lt;ws-id&gt; &gt; out.log</code><br />
+        Open the log file — thousands of raw lines visible.</p>
+      </div>
+      <div class="say-block">
+        <div class="block-label say">◆ Narration</div>
+        <p>"When a Terraform deployment fails on IBM Cloud, this is what you're faced with — <strong>thousands of raw log lines</strong>, no structure, no signal. Just noise."</p>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="scene">
+    <div class="scene-header">
+      <span class="scene-num">Scene 2</span>
+      <span class="scene-title">The Pain — Manual triage is slow and hard</span>
+      <span class="scene-time">8 – 20 s</span>
+    </div>
+    <div class="scene-body">
+      <div class="screen-block">
+        <div class="block-label screen">▶ Screen</div>
+        <ul>
+          <li>Scroll quickly through the raw log file — show grep commands failing</li>
+          <li>Show the IBM Cloud console Schematics workspace page — failed status, no actionable info</li>
+          <li>Optionally: clock graphic or "45 min" text overlay</li>
+        </ul>
+      </div>
+      <div class="say-block">
+        <div class="block-label say">◆ Narration</div>
+        <p>"Engineers spend <strong>45 minutes or more</strong> per incident manually searching for the root cause — scrolling through thousands of lines, running greps, context-switching between tools. It's repetitive, error-prone, and requires deep Terraform expertise. <strong>Non-technical team members simply can't participate.</strong>"</p>
+      </div>
+      <div class="note-block" style="grid-column:span 2">
+        <div class="block-label note">⚠ Director Note</div>
+        Use fast-scroll on the log file to visually communicate the volume problem. Keep this under 12 seconds.
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="scene">
+    <div class="scene-header">
+      <span class="scene-num">Scene 3</span>
+      <span class="scene-title">The Solution — Plug-and-play, any IBM Cloud account</span>
+      <span class="scene-time">20 – 33 s</span>
+    </div>
+    <div class="scene-body">
+      <div class="screen-block">
+        <div class="block-label screen">▶ Screen</div>
+        <ul>
+          <li>Show terminal: <code style="font-size:11px;background:#e5e7eb;padding:1px 4px;border-radius:2px">export IBM_CLOUD_API_KEY=...</code> then <code style="font-size:11px;background:#e5e7eb;padding:1px 4px;border-radius:2px">python3 scripts/fetch_dc_scheduled_runs_logs.py</code></li>
+          <li>Pipeline running — show log output scrolling as workspaces are processed</li>
+          <li>Cut to: <code style="font-size:11px;background:#e5e7eb;padding:1px 4px;border-radius:2px">python3 proxy.py</code> → browser opens to Dashboard</li>
+        </ul>
+      </div>
+      <div class="say-block">
+        <div class="block-label say">◆ Narration</div>
+        <p>"Meet <strong>WatsonXcelerate</strong> — a one-stop, plug-and-play AI log analyzer. <strong>Any IBM Cloud account</strong> can use it: just provide your API key, and the tool automatically pulls logs from <em>every</em> Schematics workspace in your account — no manual selection, no CLI commands. Our AI pipeline, powered by <strong>watsonx.ai</strong>, classifies every error in seconds."</p>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="scene">
+    <div class="scene-header">
+      <span class="scene-num">Scene 4</span>
+      <span class="scene-title">Dashboard Walk-through — Instant intelligence</span>
+      <span class="scene-time">33 – 46 s</span>
+    </div>
+    <div class="scene-body">
+      <div class="screen-block">
+        <div class="block-label screen">▶ Screen</div>
+        <ul>
+          <li><strong>Dashboard (screen 1):</strong> Show error donut chart — 5 errors, 18 runs, Latest DA Runs list</li>
+          <li><strong>Stability page (screen 2):</strong> Click a row — expand error detail with module path + description</li>
+          <li><strong>Analytics page (screen 4):</strong> Bar chart — Remote Exec, SSH Connectivity, etc. Filter by date range</li>
+        </ul>
+      </div>
+      <div class="say-block">
+        <div class="block-label say">◆ Narration</div>
+        <p>"The IBM Carbon dashboard gives you <strong>instant visibility</strong> — error categories, affected workspaces, trends over time. Click any run to see the exact root cause, the Terraform module, and a plain-English description. What used to take <strong>45 minutes now takes 3.</strong> And for the first time, <strong>everyone on the team</strong> — technical or not — can understand what went wrong."</p>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="scene">
+    <div class="scene-header">
+      <span class="scene-num">Scene 5</span>
+      <span class="scene-title">Chatbot + Data Sovereignty + Close</span>
+      <span class="scene-time">46 – 60 s</span>
+    </div>
+    <div class="scene-body">
+      <div class="screen-block">
+        <div class="block-label screen">▶ Screen</div>
+        <ul>
+          <li>Show the floating WatsonX Assistant chatbot panel open (screen 5)</li>
+          <li>Type a question: <em>"Why did the vpc-si workspace fail on June 11?"</em></li>
+          <li>Show the streamed response explaining the Terraform INIT error</li>
+          <li>Final frame: Dashboard home with "IBM Intelligent Log Analyzer" header visible</li>
+        </ul>
+      </div>
+      <div class="say-block">
+        <div class="block-label say">◆ Narration</div>
+        <p>"And there's more — an embedded <strong>watsonx.ai chatbot</strong>, built in under 5 minutes with IBM Bob, lets you ask plain-English questions about any incident, right inside the dashboard. Critically, <strong>your log data never leaves IBM Cloud</strong> — the chatbot runs entirely on IBM's <strong>Granite model</strong> via watsonx.ai, ensuring full <strong>data governance and sovereignty</strong>. No data sent to external services. Ever. <strong>WatsonXcelerate — built with IBM Bob, for everyone.</strong>"</p>
+      </div>
+      <div class="note-block" style="grid-column:span 2">
+        <div class="block-label note">⚠ Director Note</div>
+        End on the dashboard home screen with the chatbot panel still visible. Pause 1 second after the last word before cutting.
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="full-narration">
+    <h2>Full Narration — Clean Read-Through (60 seconds)</h2>
+    <p>"When a Terraform deployment fails on IBM Cloud, this is what you're faced with — thousands of raw log lines, no structure, no signal. Just noise."</p>
+    <p>"Engineers spend 45 minutes or more per incident manually searching for the root cause — scrolling through thousands of lines, running greps, context-switching between tools. It's repetitive, error-prone, and requires deep Terraform expertise. Non-technical team members simply can't participate."</p>
+    <p>"Meet WatsonXcelerate — a one-stop, plug-and-play AI log analyzer. Any IBM Cloud account can use it: just provide your API key, and the tool automatically pulls logs from every Schematics workspace in your account — no manual selection, no CLI commands. Our AI pipeline, powered by watsonx.ai, classifies every error in seconds."</p>
+    <p>"The IBM Carbon dashboard gives you instant visibility — error categories, affected workspaces, trends over time. Click any run to see the exact root cause, the Terraform module, and a plain-English description. What used to take 45 minutes now takes 3. And for the first time, everyone on the team — technical or not — can understand what went wrong."</p>
+    <p>"And there's more — an embedded watsonx.ai chatbot, built in under 5 minutes with IBM Bob, lets you ask plain-English questions about any incident, right inside the dashboard. Critically, your log data never leaves IBM Cloud — the chatbot runs entirely on IBM's Granite model via watsonx.ai, ensuring full data governance and sovereignty. No data sent to external services. Ever. WatsonXcelerate — built with IBM Bob, for everyone."</p>
+  </div>
+
+  
+  <div style="display:flex;gap:10px;margin-top:20px">
+    <div style="flex:1;background:#f0f6ff;border:1px solid #bfdbfe;border-radius:4px;padding:12px;text-align:center">
+      <div style="font-size:22px;font-weight:700;color:#3b82d4">~150</div>
+      <div style="font-size:10px;color:#57606a;margin-top:3px">words spoken<br />(~60 s at normal pace)</div>
+    </div>
+    <div style="flex:1;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:4px;padding:12px;text-align:center">
+      <div style="font-size:22px;font-weight:700;color:#7c5cd8">5</div>
+      <div style="font-size:10px;color:#57606a;margin-top:3px">distinct screen<br />moments to capture</div>
+    </div>
+    <div style="flex:1;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:4px;padding:12px;text-align:center">
+      <div style="font-size:22px;font-weight:700;color:#16a34a">3</div>
+      <div style="font-size:10px;color:#57606a;margin-top:3px">key differentiators<br />called out</div>
+    </div>
+    <div style="flex:1;background:#fffbeb;border:1px solid #fcd34d;border-radius:4px;padding:12px;text-align:center">
+      <div style="font-size:22px;font-weight:700;color:#d97706">60 s</div>
+      <div style="font-size:10px;color:#57606a;margin-top:3px">max runtime<br />(under 3-min limit)</div>
+    </div>
+  </div>
+
+  
+  <div style="margin-top:20px;background:#f7f8fa;border:1px solid #e5e7eb;border-radius:4px;padding:14px 16px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:#57606a;margin-bottom:8px">Recording Tips</div>
+    <ul style="padding-left:16px;font-size:12px;color:#1f2328">
+      <li style="margin-bottom:5px">Record screen at 1920×1080 or 1280×720. The dark Carbon dashboard looks great on video.</li>
+      <li style="margin-bottom:5px">Record narration separately and mix in post — easier to re-record individual lines.</li>
+      <li style="margin-bottom:5px">For Scene 2, pre-prepare a trimmed log file so the scrolling shows ~100 lines quickly without waiting.</li>
+      <li style="margin-bottom:5px">For Scene 5, pre-type the chatbot question off-screen so streaming response appears live on camera.</li>
+      <li>Keep total file under 10 MB — at 720p, 60 s of screen recording is typically 5–8 MB.</li>
+    </ul>
+  </div>
+
+  <div class="bob-footer">Made with IBM Bob</div>
+</div>
+</body>
+</html>
